@@ -35,7 +35,7 @@ class StudentsContainer extends Component {
     return (
       <Container>
         <Navbar bg="light" expand="lg" onSelect={this.onSelect} >
-          <Navbar.Brand href="#home">React-Bootstrap</Navbar.Brand>
+          <Navbar.Brand href="#home">Find Your Taekbae!</Navbar.Brand>
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
           <Navbar.Collapse id="basic-navbar-nav">
             <Nav
