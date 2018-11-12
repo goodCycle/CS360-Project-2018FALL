@@ -23,7 +23,8 @@ app.get('*', (req, res) => {
   res.sendFile(path.join(dist, 'index.html'));
 });
 */
-
+// students?id=aaa
+// app.post
 app.get('/api/students', (req, res) => {
   connection.query('SELECT * FROM STUDENTS', (error, results, fields) => {
     if (error) {
