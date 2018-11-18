@@ -1,35 +1,24 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
+// import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { loadApp } from 'actions/app';
-import styles from './app.css';
-import StudentsContainer from './students/StudentsContainer';
+
 
 export class AppContainer extends Component {
   componentDidMount() {
-    this.props.dispatch(loadApp());
   }
 
   render() {
-    if (!this.props.loaded) {
-      return null;
-    }
-
     return (
-      <StudentsContainer />
+      <h1>Main Page</h1>
     );
   }
 }
 
-function mapStateToProperties(state) {
-  return {
-    loaded: state.app.loaded
-  };
+function mapStateToProperties(/* state */) {
+  return { };
 }
 
 AppContainer.propTypes = {
-  loaded: PropTypes.bool.isRequired,
-  dispatch: PropTypes.func.isRequired,
 };
 
 export default connect(mapStateToProperties)(AppContainer);
