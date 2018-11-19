@@ -7,9 +7,9 @@ const app = express();
 
 const connection = mysql.createConnection({
   host: 'localhost',
-  user: 'cs360',
+  user: 'cupid',
   password: '1234',
-  database: 'cs360-pj2'
+  database: 'taekbae'
 });
 connection.connect();
 
