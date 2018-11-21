@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 // import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-
+import { Button, Container } from 'react-bootstrap';
 
 export class AppContainer extends Component {
   componentDidMount() {
@@ -9,7 +9,10 @@ export class AppContainer extends Component {
 
   render() {
     return (
-      <h1>Main Page</h1>
+      <Container>
+        <Button>Student</Button>
+        <Button>Master</Button>
+      </Container>
     );
   }
 }

@@ -4,14 +4,16 @@ import { ConnectedRouter } from 'connected-react-router';
 import { history } from 'store/index';
 import Layout from 'containers/layout';
 import App from 'containers/app';
-import StudentsContainer from './containers/students/StudentsContainer';
+import StudentContainer from './containers/students/StudentContainer';
+import MasterContainer from './containers/masters/MasterContainer';
 
 const routes = (
   <ConnectedRouter history={history}>
     <Layout>
       <Switch>
         <Route exact path="/" component={App} />
-        <Route path="/students" component={StudentsContainer} />
+        <Route path="/students" component={StudentContainer} />
+        <Route path="/masters" component={MasterContainer} />
       </Switch>
     </Layout>
   </ConnectedRouter>
