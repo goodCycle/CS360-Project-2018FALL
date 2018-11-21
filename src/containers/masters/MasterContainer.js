@@ -4,7 +4,7 @@ import DeliveryContainer from '../component/DeliveryContainer';
 import MailContainer from '../component/MailContainer';
 import MyPageContainer from '../component/MyPageContainer';
 
-class StudentsContainer extends Component {
+class MasterContainer extends Component {
   state = {
     selectedTab: '#delivery',
     students: [],
@@ -54,10 +54,10 @@ class StudentsContainer extends Component {
         </Navbar>
         {
           (selectedTab === '#delivery') // eslint-disable-line no-nested-ternary
-            ? <DeliveryContainer isMaster={false} />
+            ? <DeliveryContainer isMaster />
             : (selectedTab === '#mail')
-              ? <MailContainer isMaster={false} />
-              : <MyPageContainer isMaster={false} />
+              ? <MailContainer isMaster />
+              : <MyPageContainer isMaster />
         }
       </Container>
 
@@ -65,4 +65,4 @@ class StudentsContainer extends Component {
   }
 }
 
-export default StudentsContainer;
+export default MasterContainer;
