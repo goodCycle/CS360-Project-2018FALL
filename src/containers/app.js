@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 // import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Button, Container } from 'react-bootstrap';
+import { Link } from 'react-router-dom';
 
 export class AppContainer extends Component {
   componentDidMount() {
@@ -10,8 +11,8 @@ export class AppContainer extends Component {
   render() {
     return (
       <Container>
-        <Button>Student</Button>
-        <Button>Master</Button>
+        <Link to="/students"><Button>Student</Button></Link>
+        <Link to="/masters"><Button>Master</Button></Link>
       </Container>
     );
   }
