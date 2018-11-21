@@ -18,6 +18,14 @@ const dist = path.join(__dirname, 'dist');
 
 app.use(express.static(dist));
 
+var tables = [
+'student',
+'master',
+'dormitory',
+'delivery',
+'mail'
+];
+
 /*
 app.get('*', (req, res) => {
   res.sendFile(path.join(dist, 'index.html'));
@@ -25,16 +33,134 @@ app.get('*', (req, res) => {
 */
 // students?id=aaa
 // app.post
-app.get('/api/students', (req, res) => {
-  connection.query('SELECT * FROM STUDENTS', (error, results, fields) => {
+
+/*
+
+GET OPERATIONS
+ : 결과는 data : results 형식의 JSON으로 반환, results는 JSON list이다.
+
+'/api/{테이블 이름}'
+ : 전체 튜플 반환. 테이블 이름은 소문자여도 됩니다.
+ ex) '/api/student'
+
+'/api/{테이블 이름}/{애트리뷰트 이름}/{애트리뷰트 값}'
+ : 테이블 내 애트리뷰트 값을 통한 검색. ex) '/api/student/StuID/20150527'
+ {애트리뷰트 값}에는 string일 경우 따옴표 포함시켜 주어야 합니다. ex) '/api/student/StuName/'윤형준''
+
+'/api/student_delivery/{StuID 값}'
+ : StuID 값에 해당하는 학생 방으로 온 전체 택배 출력
+
+'/api/student_mail/{StuID 값}'
+ : StuID 값에 해당하는 학생 방으로 온 전체 메일 출력
+
+'/api/master_delivery/{MastID 값}'
+ : MastID 값에 해당하는 사감 기숙사로 온 전체 택배 출력
+
+'/api/master_mail/{MastID 값}'
+ : MastID 값에 해당하는 사감 기숙사로 온 전체 메일 출력
+
+*/
+
+function getTable(table) {
+  app.get('/api/'+table, (req, res) => {
+    connection.query('SELECT * FROM '+table.toUpperCase(), (error, results, fields) => {
+      if (error) {
+        res.status(500).json({ error: { message: error.message } });
+      }
+      console.log('The result is: ', results);
+      console.log('The field is', fields);
+      res.status(200).json({ data: results });
+    });
+  });
+}
+
+function getTableWithCond(table) {
+  app.get('/api/'+table+'/:aName/:aValue', (req, res) => {
+    connection.query('SELECT * FROM '+table.toUpperCase()+
+      ' WHERE '+req.params.aName+'='+req.params.aValue,
+      (error, results, fields) => {
+      if (error) {
+        res.status(500).json({ error: { message: error.message } });
+      }
+      console.log('The result is: ', results);
+      console.log('The field is', fields);
+      console.log(req.aName)
+      res.status(200).json({ data: results });
+    });
+  });
+}
+
+for (var i = 0; i < tables.length; i++) { 
+  getTable(tables[i])
+  getTableWithCond(tables[i])
+}
+
+app.get('/api/student_delivery/:StuID', (req, res) => {
+  connection.query('SELECT D.* FROM STUDENT AS S, DELIVERY AS D '+
+    'WHERE S.DormID=D.DormID and S.RoomNum=D.RoomNum and S.StuID='+req.params.StuID,
+    (error, results, fields) => {
     if (error) {
       res.status(500).json({ error: { message: error.message } });
     }
     console.log('The result is: ', results);
     console.log('The field is', fields);
-    res.status(200).json({ data: { students: results } });
+    console.log(req.aName)
+    res.status(200).json({ data: results });
   });
 });
+
+app.get('/api/student_mail/:StuID', (req, res) => {
+  connection.query('SELECT M.* FROM STUDENT AS S, MAIL AS M '+
+    'WHERE S.DormID=M.DormID and S.RoomNum=M.RoomNum and S.StuID='+req.params.StuID,
+    (error, results, fields) => {
+    if (error) {
+      res.status(500).json({ error: { message: error.message } });
+    }
+    console.log('The result is: ', results);
+    console.log('The field is', fields);
+    console.log(req.aName)
+    res.status(200).json({ data: results });
+  });
+});
+
+app.get('/api/master_delivery/:MastID', (req, res) => {
+  connection.query('SELECT D.* FROM MASTER AS M, DELIVERY AS D '+
+    'WHERE M.DormID=D.DormID and M.MastID='+req.params.MastID,
+    (error, results, fields) => {
+    if (error) {
+      res.status(500).json({ error: { message: error.message } });
+    }
+    console.log('The result is: ', results);
+    console.log('The field is', fields);
+    console.log(req.aName)
+    res.status(200).json({ data: results });
+  });
+});
+
+app.get('/api/master_mail/:MastID', (req, res) => {
+  connection.query('SELECT M.* FROM MASTER AS A, MAIL AS M '+
+    'WHERE A.DormID=M.DormID and A.MastID='+req.params.MastID,
+    (error, results, fields) => {
+    if (error) {
+      res.status(500).json({ error: { message: error.message } });
+    }
+    console.log('The result is: ', results);
+    console.log('The field is', fields);
+    console.log(req.aName)
+    res.status(200).json({ data: results });
+  });
+});
+
+// app.get('/api/student/'+studentid, (req, res) => {
+//   connection.query('SELECT * FROM '+table.toUpperCase(), (error, results, fields) => {
+//     if (error) {
+//       res.status(500).json({ error: { message: error.message } });
+//     }
+//     console.log('The result is: ', results);
+//     console.log('The field is', fields);
+//     res.status(200).json({ data: { students: results } });
+//   });
+// });
 
 app.listen(port, (error) => {
   if (error) {

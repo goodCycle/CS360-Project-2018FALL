@@ -1,3 +1,6 @@
+CREATE DATABASE IF NOT EXISTS taekbae;
+USE taekbae;
+
 CREATE TABLE DORMITORY (
 	DormID integer PRIMARY KEY,
 	BuildingNum varchar(5),
@@ -28,18 +31,18 @@ CREATE TABLE MAIL (
 
 CREATE TABLE STUDENT (
 	StuID integer PRIMARY KEY NOT NULL,
-    DormID integer REFERENCES DORMITORY(DormID) ON DELETE SET NULL,
-    RoomNum integer,
+	DormID integer REFERENCES DORMITORY(DormID) ON DELETE SET NULL,
+	RoomNum integer,
 	StuName varchar(20) NOT NULL,
 	PhoneNum integer,
-    Password varchar(20) NOT NULL);
+	Password varchar(20) NOT NULL);
 
 CREATE TABLE MASTER (
 	MastID integer PRIMARY KEY NOT NULL,
 	DormID integer REFERENCES DORMITORY(DormID) ON DELETE SET NULL,
 	MastName varchar(20) NOT NULL,
 	PhoneNum integer,
-    Password varchar(20) NOT NULL);
+	Password varchar(20) NOT NULL);
 
 #tuple insertion	
 #Dormitory tuples
@@ -90,3 +93,6 @@ INSERT INTO MASTER(MastID, DormID, MastName, PhoneNum, Password)
 VALUES(20091001, 22, '장동건', 01044017718, '33334444');
 INSERT INTO MASTER(MastID, DormID, MastName, PhoneNum, Password) 
 VALUES(20101003, 18, '현순주', 01054193300, '55556666');
+
+CREATE USER IF NOT EXISTS 'cupid'@'localhost' IDENTIFIED BY '1234';
+GRANT ALL PRIVILEGES ON taekbae.* TO 'cupid'@'localhost';
