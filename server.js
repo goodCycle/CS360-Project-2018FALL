@@ -18,12 +18,12 @@ const dist = path.join(__dirname, 'dist');
 
 app.use(express.static(dist));
 
-var tables = [
-'student',
-'master',
-'dormitory',
-'delivery',
-'mail'
+const tables = [
+  'student',
+  'master',
+  'dormitory',
+  'delivery',
+  'mail'
 ];
 
 /*
@@ -62,8 +62,8 @@ GET OPERATIONS
 */
 
 function getTable(table) {
-  app.get('/api/'+table, (req, res) => {
-    connection.query('SELECT * FROM '+table.toUpperCase(), (error, results, fields) => {
+  app.get(`/api/${table}`, (req, res) => {
+    connection.query(`SELECT * FROM ${table.toUpperCase()}`, (error, results, fields) => {
       if (error) {
         res.status(500).json({ error: { message: error.message } });
       }
@@ -75,10 +75,10 @@ function getTable(table) {
 }
 
 function getTableWithCond(table) {
-  app.get('/api/'+table+'/:aName/:aValue', (req, res) => {
-    connection.query('SELECT * FROM '+table.toUpperCase()+
-      ' WHERE '+req.params.aName+'='+req.params.aValue,
-      (error, results, fields) => {
+  app.get(`/api/${table}/:aName/:aValue`, (req, res) => {
+    connection.query(`SELECT * FROM ${table.toUpperCase()}
+    WHERE ${req.params.aName}=${req.params.aValue}`,
+    (error, results, fields) => {
       if (error) {
         res.status(500).json({ error: { message: error.message } });
       }
@@ -90,15 +90,15 @@ function getTableWithCond(table) {
   });
 }
 
-for (var i = 0; i < tables.length; i++) { 
-  getTable(tables[i])
-  getTableWithCond(tables[i])
+for (let i = 0; i < tables.length; i += 1) {
+  getTable(tables[i]);
+  getTableWithCond(tables[i]);
 }
 
 app.get('/api/student_delivery/:StuID', (req, res) => {
-  connection.query('SELECT D.* FROM STUDENT AS S, DELIVERY AS D '+
-    'WHERE S.DormID=D.DormID and S.RoomNum=D.RoomNum and S.StuID='+req.params.StuID,
-    (error, results, fields) => {
+  connection.query(`SELECT D.* FROM STUDENT AS S, DELIVERY AS D
+    WHERE S.DormID=D.DormID and S.RoomNum=D.RoomNum and S.StuID=${req.params.StuID}`,
+  (error, results, fields) => {
     if (error) {
       res.status(500).json({ error: { message: error.message } });
     }
@@ -110,9 +110,9 @@ app.get('/api/student_delivery/:StuID', (req, res) => {
 });
 
 app.get('/api/student_mail/:StuID', (req, res) => {
-  connection.query('SELECT M.* FROM STUDENT AS S, MAIL AS M '+
-    'WHERE S.DormID=M.DormID and S.RoomNum=M.RoomNum and S.StuID='+req.params.StuID,
-    (error, results, fields) => {
+  connection.query(`SELECT M.* FROM STUDENT AS S, MAIL AS M
+    WHERE S.DormID=M.DormID and S.RoomNum=M.RoomNum and S.StuID=${req.params.StuID}`,
+  (error, results, fields) => {
     if (error) {
       res.status(500).json({ error: { message: error.message } });
     }
@@ -124,9 +124,9 @@ app.get('/api/student_mail/:StuID', (req, res) => {
 });
 
 app.get('/api/master_delivery/:MastID', (req, res) => {
-  connection.query('SELECT D.* FROM MASTER AS M, DELIVERY AS D '+
-    'WHERE M.DormID=D.DormID and M.MastID='+req.params.MastID,
-    (error, results, fields) => {
+  connection.query(`SELECT D.* FROM MASTER AS M, DELIVERY AS D
+    WHERE M.DormID=D.DormID and M.MastID=${req.params.MastID}`,
+  (error, results, fields) => {
     if (error) {
       res.status(500).json({ error: { message: error.message } });
     }
@@ -138,15 +138,15 @@ app.get('/api/master_delivery/:MastID', (req, res) => {
 });
 
 app.get('/api/master_mail/:MastID', (req, res) => {
-  connection.query('SELECT M.* FROM MASTER AS A, MAIL AS M '+
-    'WHERE A.DormID=M.DormID and A.MastID='+req.params.MastID,
-    (error, results, fields) => {
+  connection.query(`SELECT M.* FROM MASTER AS A, MAIL AS M
+    WHERE A.DormID=M.DormID and A.MastID=${req.params.MastID}`,
+  (error, results, fields) => {
     if (error) {
       res.status(500).json({ error: { message: error.message } });
     }
     console.log('The result is: ', results);
     console.log('The field is', fields);
-    console.log(req.aName)
+    console.log(req.aName);
     res.status(200).json({ data: results });
   });
 });
