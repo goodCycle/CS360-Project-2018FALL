@@ -19,7 +19,7 @@ class MasterContainer extends Component {
   }
 
   getStudents = () =>
-    fetch('/api/students')
+    fetch('/api/student')
       .then((response) => response.json())
       .then((responseData) => {
         console.log(responseData);
@@ -34,19 +34,21 @@ class MasterContainer extends Component {
     const { selectedTab } = this.state;
     return (
       <Container>
-        <Navbar bg="light" expand="lg" onSelect={this.onSelect} >
+        <Navbar bg="light" expand="lg">
           <Navbar.Brand href="#home">Find Your Taekbae!</Navbar.Brand>
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
           <Navbar.Collapse id="basic-navbar-nav">
             <Nav
               className="mr-auto"
               activeKey={this.state.selectedTab}
+              onSelect={this.onSelect}
             >
               <Nav.Link href="#delivery">Delivery</Nav.Link>
               <Nav.Link href="#mail">Mail</Nav.Link>
             </Nav>
             <Nav
               activeKey={this.state.selectedTab}
+              onSelect={this.onSelect}
             >
               <Nav.Link href="#mypage">My Page</Nav.Link>
             </Nav>
