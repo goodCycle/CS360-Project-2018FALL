@@ -1,18 +1,24 @@
 import React, { Component } from 'react';
-// import PropTypes from 'prop-types';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Button, Container, Form } from 'react-bootstrap';
-import { Link } from 'react-router-dom';
+import { Button, Container, Form, Navbar, Nav, Alert } from 'react-bootstrap';
 import qs from 'qs';
 
 export class AppContainer extends Component {
   state = {
+    selectedTab: '#signin',
     isStudent: true,
-    email: null,
+    id: null,
     password: null,
+    user: null,
   }
 
   componentDidMount() {
+  }
+
+  onSelect= (selectedKey) => {
+    this.setState({ selectedTab: selectedKey });
+    console.log(selectedKey);
   }
 
   onChangeStudentRadio = (event) => {
@@ -25,29 +31,51 @@ export class AppContainer extends Component {
     this.setState({ isStudent: !event.target.checked });
   }
 
-  onChangeEmail = (event) => {
-    this.setState({ email: event.target.value });
+  onChangeID = (event) => {
+    this.setState({ id: event.target.value });
   }
 
   onChangePassword = (event) => {
     this.setState({ password: event.target.value });
   }
 
-  onClickSubmitButton = () => {
+  onClickSubmitButton = (event) => {
+    event.preventDefault();
+
     this.setState({ logining: true });
     const params = {
-      email: this.state.email,
+      id: this.state.id,
       password: this.state.password,
     };
-    return fetch(`/api/login?${qs.stringify(params)}`)
+    const studentOrMaster =
+      (this.state.isStudent)
+        ? 'student'
+        : 'master';
+    return fetch(`/api/login/${studentOrMaster}?${qs.stringify(params)}`)
       .then((response) => response.json())
       .then((responseData) => {
         console.log(responseData);
-        this.setState({ students: responseData.data.students });
-        // console.log(this.state.students);
+        if (responseData.error != null) {
+          this.setState({ error: new Error(responseData.error.message) });
+          return;
+        }
+        const { user } = responseData.data;
+        this.setState({ user });
+        if (user == null) {
+          console.log('Login Failed');
+          this.setState({ error: new Error('Please check your ID or Password!') });
+          return;
+        }
+        this.setState({ error: null });
+        if (user.StuID != null) {
+          this.props.history.push({ pathname: '/students', state: { user: this.state.user } });
+          return;
+        }
+        this.props.history.push({ pathname: '/masters', state: { user: this.state.user } });
       })
       .catch((error) => {
-        console.log('Error fetching getStudents', error);
+        console.log('onClickSubmit error', error);
+        this.setState({ error });
       });
   }
 
@@ -75,13 +103,9 @@ export class AppContainer extends Component {
           />
         </div>
         <Form.Group controlId="formBasicEmail">
-          <Form.Label>Email address</Form.Label>
-          <Form.Control type="email" placeholder="Enter email" onChange={this.onChangeEmail} />
-          <Form.Text className="text-muted">
-            We'll never share your email with anyone else.
-          </Form.Text>
+          <Form.Label>ID</Form.Label>
+          <Form.Control type="text" placeholder="Enter ID" onChange={this.onChangeID} />
         </Form.Group>
-
         <Form.Group controlId="formBasicPassword">
           <Form.Label>Password</Form.Label>
           <Form.Control type="password" placeholder="Password" onChange={this.onChangePassword} />
@@ -92,12 +116,43 @@ export class AppContainer extends Component {
       </Form>
     );
   }
+
+  renderError = () => {
+    return (
+      <Alert variant="warning">
+        {this.state.error.message}
+      </Alert>
+    );
+  }
+
   render() {
     return (
       <Container>
-        <Link to="/students"><Button>Student</Button></Link>
-        <Link to="/masters"><Button>Master</Button></Link>
-        {this.renderLogin()}
+        <Navbar bg="light" expand="lg">
+          <Navbar.Brand href="#home">Find Your Taekbae!</Navbar.Brand>
+          <Navbar.Toggle aria-controls="basic-navbar-nav" />
+          <Navbar.Collapse id="basic-navbar-nav">
+            <Nav
+              className="mr-auto"
+              activeKey={this.state.selectedTab}
+              onSelect={this.onSelect}
+            >
+              <Nav.Link href="#signin">Sign In</Nav.Link>
+              <Nav.Link href="#signup">Sign Up</Nav.Link>
+            </Nav>
+          </Navbar.Collapse>
+        </Navbar>
+        <p>&nbsp;</p>
+        {
+          (this.state.error != null)
+            ? this.renderError()
+            : null
+        }
+        {
+          (this.state.selectedTab === '#signin') // eslint-disable-line no-nested-ternary
+            ? this.renderLogin()
+            : null
+        }
       </Container>
     );
   }
@@ -108,6 +163,9 @@ function mapStateToProperties(/* state */) {
 }
 
 AppContainer.propTypes = {
+  history: PropTypes.shape({
+    push: PropTypes.func.isRequired,
+  }).isRequired,
 };
 
 export default connect(mapStateToProperties)(AppContainer);
