@@ -22,12 +22,10 @@ export class AppContainer extends Component {
   }
 
   onChangeStudentRadio = (event) => {
-    console.log('student checked!', event.target.checked);
     this.setState({ isStudent: event.target.checked });
   }
 
   onChangeMasterRadio = (event) => {
-    console.log('master checked!', event.target.checked);
     this.setState({ isStudent: !event.target.checked });
   }
 
