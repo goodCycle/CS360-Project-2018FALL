@@ -76,6 +76,7 @@
     "mysql": "^2.16.0",
     "null-loader": "^0.1.1",
     "prop-types": "^15.6.2",
+    "qs": "^6.5.2",
     "react": "^16.0.0",
     "react-bootstrap": "^1.0.0-beta.2",
     "react-dom": "^16.0.0",

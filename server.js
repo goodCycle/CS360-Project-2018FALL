@@ -84,7 +84,7 @@ function getTableWithCond(table) {
       }
       console.log('The result is: ', results);
       console.log('The field is', fields);
-      console.log(req.aName)
+      console.log(req.aName);
       res.status(200).json({ data: results });
     });
   });
@@ -104,7 +104,7 @@ app.get('/api/student_delivery/:StuID', (req, res) => {
     }
     console.log('The result is: ', results);
     console.log('The field is', fields);
-    console.log(req.aName)
+    console.log(req.aName);
     res.status(200).json({ data: results });
   });
 });
@@ -118,7 +118,7 @@ app.get('/api/student_mail/:StuID', (req, res) => {
     }
     console.log('The result is: ', results);
     console.log('The field is', fields);
-    console.log(req.aName)
+    console.log(req.aName);
     res.status(200).json({ data: results });
   });
 });
@@ -132,7 +132,7 @@ app.get('/api/master_delivery/:MastID', (req, res) => {
     }
     console.log('The result is: ', results);
     console.log('The field is', fields);
-    console.log(req.aName)
+    console.log(req.aName);
     res.status(200).json({ data: results });
   });
 });
