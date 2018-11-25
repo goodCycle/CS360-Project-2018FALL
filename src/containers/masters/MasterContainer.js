@@ -24,7 +24,6 @@ class MasterContainer extends Component {
       .then((responseData) => {
         console.log(responseData);
         this.setState({ students: responseData.data.students });
-        // console.log(this.state.students);
       })
       .catch((error) => {
         console.log('Error fetching getStudents', error);

@@ -77,83 +77,77 @@ export class AppContainer extends Component {
       });
   }
 
-  renderLogin = () => {
-    return (
-      <Form>
-        <div key={'select-type'} className="mb-3">
-          <Form.Check
-            checked={this.state.isStudent}
-            onChange={this.onChangeStudentRadio}
-            custom
-            inline
-            label="Student"
-            type={'radio'}
-            id={'radio-student'}
-          />
-          <Form.Check
-            checked={!this.state.isStudent}
-            onChange={this.onChangeMasterRadio}
-            custom
-            inline
-            label="Master"
-            type={'radio'}
-            id={'radio-master'}
-          />
-        </div>
-        <Form.Group controlId="formBasicEmail">
-          <Form.Label>ID</Form.Label>
-          <Form.Control type="text" placeholder="Enter ID" onChange={this.onChangeID} />
-        </Form.Group>
-        <Form.Group controlId="formBasicPassword">
-          <Form.Label>Password</Form.Label>
-          <Form.Control type="password" placeholder="Password" onChange={this.onChangePassword} />
-        </Form.Group>
-        <Button variant="primary" type="submit" onClick={this.onClickSubmitButton}>
-          Submit
-        </Button>
-      </Form>
-    );
-  }
+  renderLogin = () => (
+    <Form>
+      <div key={'select-type'} className="mb-3">
+        <Form.Check
+          checked={this.state.isStudent}
+          onChange={this.onChangeStudentRadio}
+          custom
+          inline
+          label="Student"
+          type={'radio'}
+          id={'radio-student'}
+        />
+        <Form.Check
+          checked={!this.state.isStudent}
+          onChange={this.onChangeMasterRadio}
+          custom
+          inline
+          label="Master"
+          type={'radio'}
+          id={'radio-master'}
+        />
+      </div>
+      <Form.Group controlId="formBasicEmail">
+        <Form.Label>ID</Form.Label>
+        <Form.Control type="text" placeholder="Enter ID" onChange={this.onChangeID} />
+      </Form.Group>
+      <Form.Group controlId="formBasicPassword">
+        <Form.Label>Password</Form.Label>
+        <Form.Control type="password" placeholder="Password" onChange={this.onChangePassword} />
+      </Form.Group>
+      <Button variant="primary" type="submit" onClick={this.onClickSubmitButton}>
+        Submit
+      </Button>
+    </Form>
+  );
 
-  renderError = () => {
-    return (
-      <Alert variant="warning">
-        {this.state.error.message}
-      </Alert>
-    );
-  }
+  renderError = () => (
+    <Alert variant="warning">
+      {this.state.error.message}
+    </Alert>
+  );
 
-  render() {
-    return (
-      <Container>
-        <Navbar bg="light" expand="lg">
-          <Navbar.Brand href="#home">Find Your Taekbae!</Navbar.Brand>
-          <Navbar.Toggle aria-controls="basic-navbar-nav" />
-          <Navbar.Collapse id="basic-navbar-nav">
-            <Nav
-              className="mr-auto"
-              activeKey={this.state.selectedTab}
-              onSelect={this.onSelect}
-            >
-              <Nav.Link href="#signin">Sign In</Nav.Link>
-              <Nav.Link href="#signup">Sign Up</Nav.Link>
-            </Nav>
-          </Navbar.Collapse>
-        </Navbar>
-        <p>&nbsp;</p>
-        {
-          (this.state.error != null)
-            ? this.renderError()
-            : null
-        }
-        {
-          (this.state.selectedTab === '#signin') // eslint-disable-line no-nested-ternary
-            ? this.renderLogin()
-            : null
-        }
-      </Container>
-    );
-  }
+  render = () => (
+    <Container>
+      <Navbar bg="light" expand="lg">
+        <Navbar.Brand href="#home">Find Your Taekbae!</Navbar.Brand>
+        <Navbar.Toggle aria-controls="basic-navbar-nav" />
+        <Navbar.Collapse id="basic-navbar-nav">
+          <Nav
+            className="mr-auto"
+            activeKey={this.state.selectedTab}
+            onSelect={this.onSelect}
+          >
+            <Nav.Link href="#signin">Sign In</Nav.Link>
+            <Nav.Link href="#signup">Sign Up</Nav.Link>
+          </Nav>
+        </Navbar.Collapse>
+      </Navbar>
+      <p>&nbsp;</p>
+      {
+        (this.state.error != null)
+          ? this.renderError()
+          : null
+      }
+      {
+        (this.state.selectedTab === '#signin') // eslint-disable-line no-nested-ternary
+          ? this.renderLogin()
+          : null
+      }
+    </Container>
+  );
 }
 
 function mapStateToProperties(/* state */) {
