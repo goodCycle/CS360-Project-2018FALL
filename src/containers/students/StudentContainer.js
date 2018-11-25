@@ -19,11 +19,11 @@ class StudentContainer extends Component {
   }
 
   getStudents = () =>
-    fetch('/api/students')
+    fetch('/api/student')
       .then((response) => response.json())
       .then((responseData) => {
         console.log(responseData);
-        this.setState({ students: responseData.data.students });
+        this.setState({ students: responseData.data });
         // console.log(this.state.students);
       })
       .catch((error) => {
@@ -54,7 +54,7 @@ class StudentContainer extends Component {
         </Navbar>
         {
           (selectedTab === '#delivery') // eslint-disable-line no-nested-ternary
-            ? <DeliveryContainer isMaster={false} />
+            ? <DeliveryContainer isMaster={false} id='20140461'/>
             : (selectedTab === '#mail')
               ? <MailContainer isMaster={false} />
               : <MyPageContainer isMaster={false} />
