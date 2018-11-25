@@ -28,11 +28,11 @@ class DeliveryContainer extends Component {
 
     render() {
       const stateTitle = (deliv) => {
-        if (deliv == '1') {
+        if (deliv === '1') {
           return '미수령';
-        } else if (deliv == '2') {
+        } else if (deliv === '2') {
           return '수령 완료';
-        } else if (deliv == '3') {
+        } else if (deliv === '3') {
           return '반송 신청';
         }
         return '의문의 상태';
@@ -43,9 +43,9 @@ class DeliveryContainer extends Component {
           <Tab.Container id="left-tabs-example" defaultActiveKey="default">
             <Row>
               <Col sm={3} bg="light" expand="lg">
-                {/*<Navbar bg="light" expand="lg" onSelect={this.onSelect} >*/}
-                <Nav variant="pills" className="flex-column" style={{backgroundColor: '#F6F6F9', borderRadius: "5px"}}>
-                  <Nav.Item style={{color: 'white'}}>
+                {/* <Navbar bg="light" expand="lg" onSelect={this.onSelect} > */}
+                <Nav variant="pills" className="flex-column" style={{ backgroundColor: '#F6F6F9', borderRadius: '5px' }}>
+                  <Nav.Item style={{ color: 'white' }}>
                     <Nav.Link eventKey="default">
                         받는 이 / 배송 날짜
                     </Nav.Link>
@@ -119,6 +119,7 @@ class DeliveryContainer extends Component {
 
 DeliveryContainer.propTypes = {
   isMaster: PropTypes.bool.isRequired,
+  id: PropTypes.instanceOf.isRequired,
 };
 
 export default DeliveryContainer;

@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import { Container, Navbar, Nav } from 'react-bootstrap';
 import DeliveryContainer from '../component/DeliveryContainer';
 import MailContainer from '../component/MailContainer';
@@ -8,9 +9,12 @@ class StudentContainer extends Component {
   state = {
     selectedTab: '#delivery',
     students: [],
+    userId: null,
   }
   componentDidMount() {
     this.getStudents();
+    const { user } = this.props.location.state;
+    this.setState({ userId: user.StuID });
   }
 
   onSelect= (selectedKey) => {
@@ -54,15 +58,24 @@ class StudentContainer extends Component {
         </Navbar>
         {
           (selectedTab === '#delivery') // eslint-disable-line no-nested-ternary
-            ? <DeliveryContainer isMaster={false} />
+            ? <DeliveryContainer isMaster={false} id={this.state.userId} />
             : (selectedTab === '#mail')
-              ? <MailContainer isMaster={false} />
-              : <MyPageContainer isMaster={false} />
+              ? <MailContainer isMaster={false} id={this.state.userId} />
+              : <MyPageContainer isMaster={false} id={this.state.userId} />
         }
       </Container>
 
     );
   }
 }
+
+StudentContainer.propTypes = {
+  location: PropTypes.shape({
+    state: PropTypes.shape({
+      user: PropTypes.shape({
+      }).isRequired,
+    }).isRequired
+  }).isRequired,
+};
 
 export default StudentContainer;
