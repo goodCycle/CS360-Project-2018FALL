@@ -41,7 +41,6 @@ export class AppContainer extends Component {
   onClickSubmitButton = (event) => {
     event.preventDefault();
 
-    this.setState({ logining: true });
     const params = {
       id: this.state.id,
       password: this.state.password,

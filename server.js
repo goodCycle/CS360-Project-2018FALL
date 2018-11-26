@@ -184,6 +184,7 @@ app.get('/api/login/:studentOrMaster', (req, res) => {
     });
   }
 });
+
 // app.get('/api/student/'+studentid, (req, res) => {
 //   connection.query('SELECT * FROM '+table.toUpperCase(), (error, results, fields) => {
 //     if (error) {
@@ -205,13 +206,13 @@ app.post('/api/student', (req, res) => {
     PhoneNum: req.body.PhoneNum,
     Password: req.body.Password
   };
-  var query = connection.query('INSERT INTO STUDENT SET ?', student,
+  const query = connection.query('INSERT INTO STUDENT SET ?', student,
     (err, result) => {
       if (err) {
         console.error(err);
         throw err;
       }
-      console.log(query);
+      console.log('Success insert student!', query);
       res.send(200, 'success');
     });
 });
@@ -225,7 +226,7 @@ app.post('/api/master', (req, res) => {
     PhoneNum: req.body.PhoneNum,
     Password: req.body.Password
   };
-  var query = connection.query('INSERT INTO MASTER SET ?', master,
+  const query = connection.query('INSERT INTO MASTER SET ?', master,
     (err, result) => {
       if (err) {
         console.error(err);
@@ -250,7 +251,7 @@ app.post('/api/delivery', (req, res) => {
     ArrivalDate: new Date(),
     ReceiptDate: null
   };
-  var query = connection.query('INSERT INTO DELIVERY SET ?', delivery,
+  const query = connection.query('INSERT INTO DELIVERY SET ?', delivery,
     (err, result) => {
       if (err) {
         console.error(err);
@@ -274,7 +275,7 @@ app.post('/api/mail', (req, res) => {
     ArrivalDate: new Date(),
     ReceiptDate: null
   };
-  var query = connection.query('INSERT INTO MAIL SET ?', mail,
+  const query = connection.query('INSERT INTO MAIL SET ?', mail,
     (err, result) => {
       if (err) {
         console.error(err);
@@ -295,13 +296,13 @@ app.post('/api/student/:StuID', (req, res) => {
     PhoneNum: req.body.PhoneNum,
     Password: req.body.Password
   };
-  var query = connection.query(`UPDATE STUDENT SET ? WHERE StuID=${StuID}`, student,
+  const query = connection.query(`UPDATE STUDENT SET ? WHERE StuID=${StuID}`, student,
     (err, result) => {
       if (err) {
-        console.error(err);
+        console.error('Update Student Error', err);
         throw err;
       }
-      console.log(query);
+      console.log('Update Student Query', query);
       res.send(200, 'success');
     });
 });
@@ -315,7 +316,7 @@ app.post('/api/master/:MastID', (req, res) => {
     PhoneNum: req.body.PhoneNum,
     Password: req.body.Password
   };
-  var query = connection.query(`UPDATE MASTER SET ? WHERE MastID=${MastID}`, master,
+  const query = connection.query(`UPDATE MASTER SET ? WHERE MastID=${MastID}`, master,
     (err, result) => {
       if (err) {
         console.error(err);
@@ -329,12 +330,12 @@ app.post('/api/master/:MastID', (req, res) => {
 app.post('/api/delivery_state/:DelivID', (req, res) => {
   console.log(req.body);
   const DelivID = req.params.DelivID;
-  var newState = {
+  let newState = {
     State: req.body.State,
     ReceiptDate: null
   };
-  if (req.body.State == 2) {
-    var now = new Date();
+  if (req.body.State === 2) {
+    const now = new Date();
     now.setHours(now.getHours() + 9);
     newState = {
       State: req.body.State,
@@ -342,7 +343,7 @@ app.post('/api/delivery_state/:DelivID', (req, res) => {
     };
   }
 
-  var query = connection.query(`UPDATE DELIVERY SET ? WHERE DelivID=${DelivID}`, newState,
+  const query = connection.query(`UPDATE DELIVERY SET ? WHERE DelivID=${DelivID}`, newState,
     (err, result) => {
       if (err) {
         console.error(err);
