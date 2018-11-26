@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Button, Container, Form, Navbar, Nav, Alert } from 'react-bootstrap';
 import qs from 'qs';
+import SignUpContainer from './component/SignUpContainer';
 
 export class AppContainer extends Component {
   state = {
@@ -79,7 +80,7 @@ export class AppContainer extends Component {
 
   renderLogin = () => (
     <Form>
-      <div key={'select-type'} className="mb-3">
+      <div key={this.state.selectedTab} className="mb-3">
         <Form.Check
           checked={this.state.isStudent}
           onChange={this.onChangeStudentRadio}
@@ -144,7 +145,7 @@ export class AppContainer extends Component {
       {
         (this.state.selectedTab === '#signin') // eslint-disable-line no-nested-ternary
           ? this.renderLogin()
-          : null
+          : <SignUpContainer />
       }
     </Container>
   );
