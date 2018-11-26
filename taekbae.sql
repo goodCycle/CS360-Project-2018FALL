@@ -71,8 +71,8 @@ INSERT INTO DORMITORY(DormID, BuildingNum, BuildingName) VALUES(22, 'N21', '지�
 INSERT INTO DORMITORY(DormID, BuildingNum, BuildingName) VALUES(23, 'N27', '유레카관');
 
 #Delivery tuples
-INSERT INTO DELIVERY(DelivID, DormID, RoomNum, Receiver, Sender, Content, Location, State)
-VALUES(151515, 22, 322, '윤형준', '이찬욱', '문구류', '대전광역시 유성구 구성동 한국과학기술원 지혜관 322호', 1);
+INSERT INTO DELIVERY(DelivID, DormID, RoomNum, Receiver, Sender, Content, Location, State, ArrivalDate, ReceiptDate)
+VALUES(151515, 22, 322, '윤형준', '이찬욱', '문구류', '대전광역시 유성구 구성동 한국과학기술원 지혜관 322호', 1, NOW(), NULL);
 
 #Mail tuples
 INSERT INTO MAIL(MailID, DormID, RoomNum, Receiver, Sender, Location, State)
