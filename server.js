@@ -2,6 +2,7 @@ import mysql from 'mysql';
 
 const path = require('path');
 const express = require('express');
+const bodyParser = require('body-parser')
 
 const app = express();
 
@@ -17,6 +18,8 @@ const port = process.env.PORT ? process.env.PORT : 8181;
 const dist = path.join(__dirname, 'dist');
 
 app.use(express.static(dist));
+app.use(bodyParser.urlencoded({ extended: false }))
+app.use(bodyParser.json())
 
 const tables = [
   'student',
@@ -191,6 +194,94 @@ app.get('/api/login/:studentOrMaster', (req, res) => {
 //     res.status(200).json({ data: { students: results } });
 //   });
 // });
+
+app.post('/api/student', (req, res) => {
+  console.log(req.body)
+  var student = {
+    'StuID': req.body.StuID,
+    'DormID': req.body.DormID,
+    'RoomNum': req.body.RoomNum,
+    'StuName': req.body.StuName,
+    'PhoneNum': req.body.PhoneNum,
+    'Password': req.body.Password
+  };
+  var query = connection.query('INSERT INTO STUDENT SET ?', student,
+    (err, result) => {
+      if (err) {
+        console.error(err);
+        throw err;
+      }
+      console.log(query);
+      res.send(200, 'success');
+    });
+});
+
+app.post('/api/master', (req, res) => {
+  console.log(req.body)
+  var student = {
+    'MastID': req.body.MastID,
+    'DormID': req.body.DormID,
+    'StuName': req.body.StuName,
+    'PhoneNum': req.body.PhoneNum,
+    'Password': req.body.Password
+  };
+  var query = connection.query('INSERT INTO MASTER SET ?', student,
+    (err, result) => {
+      if (err) {
+        console.error(err);
+        throw err;
+      }
+      console.log(query);
+      res.send(200, 'success');
+    });
+});
+
+app.post('/api/delivery', (req, res) => {
+  console.log(req.body)
+  var student = {
+    'DelivID': req.body.DelivID,
+    'DormID': req.body.DormID,
+    'RoomNum': req.body.RoomNum,
+    'Receiver': req.body.Receiver,
+    'Sender': req.body.Sender,
+    'Content': req.body.Content,
+    'Location': req.body.Location,
+    'State': req.body.State,
+    'ArrivalDate': req.body.ArrivalDate,
+  };
+  var query = connection.query('INSERT INTO DELIVERY SET ?', student,
+    (err, result) => {
+      if (err) {
+        console.error(err);
+        throw err;
+      }
+      console.log(query);
+      res.send(200, 'success');
+    });
+});
+
+app.post('/api/mail', (req, res) => {
+  console.log(req.body)
+  var student = {
+    'MailID': req.body.MailID,
+    'DormID': req.body.DormID,
+    'RoomNum': req.body.RoomNum,
+    'Receiver': req.body.Receiver,
+    'Sender': req.body.Sender,
+    'Location': req.body.Location,
+    'State': req.body.State,
+    'ArrivalDate': req.body.ArrivalDate,
+  };
+  var query = connection.query('INSERT INTO MAIL SET ?', student,
+    (err, result) => {
+      if (err) {
+        console.error(err);
+        throw err;
+      }
+      console.log(query);
+      res.send(200, 'success');
+    });
+});
 
 app.listen(port, (error) => {
   if (error) {

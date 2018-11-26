@@ -43,11 +43,11 @@ class DeliveryContainer extends Component {
 
   render() {
     const stateTitle = (deliv) => {
-      if (deliv === '1') {
+      if (deliv === 1) {
         return '미수령';
-      } else if (deliv === '2') {
+      } else if (deliv === 2) {
         return '수령 완료';
-      } else if (deliv === '3') {
+      } else if (deliv === 3) {
         return '반송 신청';
       }
       return '의문의 상태';
