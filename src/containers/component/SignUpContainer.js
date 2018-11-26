@@ -42,7 +42,7 @@ class SignUpContainer extends Component {
   }
 
   onClickSubmitButton = () => {
-    return;
+
   };
 
   render() {

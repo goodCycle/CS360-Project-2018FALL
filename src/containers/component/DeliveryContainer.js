@@ -23,8 +23,32 @@ class DeliveryContainer extends Component {
   }
 
   componentDidMount() {
-    const getRoomDeliv = () => {
-      return fetch(`/api/student_delivery/${this.state.userId}`)
+    const getRoomDeliv = () => fetch(`/api/student_delivery/${this.state.userId}`)
+      .then((response) => response.json())
+      .then((responseData) => {
+        console.log(responseData.data);
+        this.setState({ deliveryList: responseData.data });
+      })
+      .catch((error) => {
+        console.log('Error fetching getRoomDeliv', error);
+      });
+
+    return getRoomDeliv()
+      .then(() => {
+        this.setState({ loaded: true });
+      });
+  }
+
+  changeState(DelivID, StateNum) {
+    console.log(DelivID);
+    const updateState = () => fetch(`/api/delivery_state/${DelivID}`, {
+      method: 'post',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        State: StateNum
+      })
+    })
+      .then(() => fetch(`/api/student_delivery/${this.state.userId}`)
         .then((response) => response.json())
         .then((responseData) => {
           console.log(responseData.data);
@@ -32,13 +56,9 @@ class DeliveryContainer extends Component {
         })
         .catch((error) => {
           console.log('Error fetching getRoomDeliv', error);
-        });
-    };
+        }));
 
-    return getRoomDeliv()
-      .then(() => {
-        this.setState({ loaded: true });
-      });
+    return updateState();
   }
 
   render() {
@@ -74,9 +94,10 @@ class DeliveryContainer extends Component {
                           <div>
                             {item.Receiver}
                           </div>
-                          <div>
-                            {item.ArrivalDate}
-                          </div>
+                          {
+                            item.ArrivalDate !== null &&
+                            <div>{item.ArrivalDate.split('T')[0]}</div>
+                          }
                         </Nav.Link>
                       </Nav.Item>
                     )))
@@ -107,10 +128,22 @@ class DeliveryContainer extends Component {
                         <p>{item.Receiver}</p>
                         <h6 style={{ fontWeight: 'bold' }}>내용물</h6>
                         <p>{item.Content}</p>
-                        <h6 style={{ fontWeight: 'bold' }}>도착 시간</h6>
-                        <p>{item.ArrivalDate}</p>
-                        <h6 style={{ fontWeight: 'bold' }}>수령 시간</h6>
-                        <p>{item.ReceiptDate}</p>
+                        {
+                          item.ArrivalDate !== null &&
+                          <div>
+                            <h6 style={{ fontWeight: 'bold' }}>도착 시간</h6>
+                            <p>{item.ArrivalDate.split('T')[0]}<br />
+                              {item.ArrivalDate.split('T')[1].split('.')[0]}</p>
+                          </div>
+                        }
+                        {
+                          item.ReceiptDate !== null &&
+                            <div>
+                              <h6 style={{ fontWeight: 'bold' }}>수령 시간</h6>
+                              <p>{item.ReceiptDate.split('T')[0]}<br />
+                                {item.ReceiptDate.split('T')[1].split('.')[0]}</p>
+                            </div>
+                        }
                         <h6 style={{ fontWeight: 'bold' }}>배송 상태</h6>
                         <Dropdown as={ButtonGroup}>
                           <Button variant="info">
@@ -118,9 +151,15 @@ class DeliveryContainer extends Component {
                           </Button>
                           <Dropdown.Toggle split variant="info" id="dropdown-split-basic" />
                           <Dropdown.Menu>
-                            <Dropdown.Item hred="#/action-1">미수령</Dropdown.Item>
-                            <Dropdown.Item hred="#/action-2">수령 완료</Dropdown.Item>
-                            <Dropdown.Item hred="#/action-3">반송 신청</Dropdown.Item>
+                            <Dropdown.Item onClick={this.changeState.bind(this, item.DelivID, 1)}>
+                              미수령
+                            </Dropdown.Item>
+                            <Dropdown.Item onClick={this.changeState.bind(this, item.DelivID, 2)}>
+                              수령 완료
+                            </Dropdown.Item>
+                            <Dropdown.Item onClick={this.changeState.bind(this, item.DelivID, 3)}>
+                              반송 신청
+                            </Dropdown.Item>
                           </Dropdown.Menu>
                         </Dropdown>
                       </Jumbotron>

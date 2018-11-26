@@ -2,7 +2,7 @@ import mysql from 'mysql';
 
 const path = require('path');
 const express = require('express');
-const bodyParser = require('body-parser')
+const bodyParser = require('body-parser');
 
 const app = express();
 
@@ -196,14 +196,14 @@ app.get('/api/login/:studentOrMaster', (req, res) => {
 // });
 
 app.post('/api/student', (req, res) => {
-  console.log(req.body)
-  var student = {
-    'StuID': req.body.StuID,
-    'DormID': req.body.DormID,
-    'RoomNum': req.body.RoomNum,
-    'StuName': req.body.StuName,
-    'PhoneNum': req.body.PhoneNum,
-    'Password': req.body.Password
+  console.log(req.body);
+  const student = {
+    StuID: req.body.StuID,
+    DormID: req.body.DormID,
+    RoomNum: req.body.RoomNum,
+    StuName: req.body.StuName,
+    PhoneNum: req.body.PhoneNum,
+    Password: req.body.Password
   };
   var query = connection.query('INSERT INTO STUDENT SET ?', student,
     (err, result) => {
@@ -217,15 +217,15 @@ app.post('/api/student', (req, res) => {
 });
 
 app.post('/api/master', (req, res) => {
-  console.log(req.body)
-  var student = {
-    'MastID': req.body.MastID,
-    'DormID': req.body.DormID,
-    'StuName': req.body.StuName,
-    'PhoneNum': req.body.PhoneNum,
-    'Password': req.body.Password
+  console.log(req.body);
+  const master = {
+    MastID: req.body.MastID,
+    DormID: req.body.DormID,
+    MastName: req.body.MastName,
+    PhoneNum: req.body.PhoneNum,
+    Password: req.body.Password
   };
-  var query = connection.query('INSERT INTO MASTER SET ?', student,
+  var query = connection.query('INSERT INTO MASTER SET ?', master,
     (err, result) => {
       if (err) {
         console.error(err);
@@ -237,19 +237,20 @@ app.post('/api/master', (req, res) => {
 });
 
 app.post('/api/delivery', (req, res) => {
-  console.log(req.body)
-  var student = {
-    'DelivID': req.body.DelivID,
-    'DormID': req.body.DormID,
-    'RoomNum': req.body.RoomNum,
-    'Receiver': req.body.Receiver,
-    'Sender': req.body.Sender,
-    'Content': req.body.Content,
-    'Location': req.body.Location,
-    'State': req.body.State,
-    'ArrivalDate': req.body.ArrivalDate,
+  console.log(req.body);
+  const delivery = {
+    DelivID: req.body.DelivID,
+    DormID: req.body.DormID,
+    RoomNum: req.body.RoomNum,
+    Receiver: req.body.Receiver,
+    Sender: req.body.Sender,
+    Content: req.body.Content,
+    Location: req.body.Location,
+    State: req.body.State,
+    ArrivalDate: new Date(),
+    ReceiptDate: null
   };
-  var query = connection.query('INSERT INTO DELIVERY SET ?', student,
+  var query = connection.query('INSERT INTO DELIVERY SET ?', delivery,
     (err, result) => {
       if (err) {
         console.error(err);
@@ -261,18 +262,87 @@ app.post('/api/delivery', (req, res) => {
 });
 
 app.post('/api/mail', (req, res) => {
-  console.log(req.body)
-  var student = {
-    'MailID': req.body.MailID,
-    'DormID': req.body.DormID,
-    'RoomNum': req.body.RoomNum,
-    'Receiver': req.body.Receiver,
-    'Sender': req.body.Sender,
-    'Location': req.body.Location,
-    'State': req.body.State,
-    'ArrivalDate': req.body.ArrivalDate,
+  console.log(req.body);
+  const mail = {
+    MailID: req.body.MailID,
+    DormID: req.body.DormID,
+    RoomNum: req.body.RoomNum,
+    Receiver: req.body.Receiver,
+    Sender: req.body.Sender,
+    Location: req.body.Location,
+    State: req.body.State,
+    ArrivalDate: new Date(),
+    ReceiptDate: null
   };
-  var query = connection.query('INSERT INTO MAIL SET ?', student,
+  var query = connection.query('INSERT INTO MAIL SET ?', mail,
+    (err, result) => {
+      if (err) {
+        console.error(err);
+        throw err;
+      }
+      console.log(query);
+      res.send(200, 'success');
+    });
+});
+
+app.post('/api/student/:StuID', (req, res) => {
+  console.log(req.body);
+  const StuID = req.params.StuID;
+  const student = {
+    DormID: req.body.DormID,
+    RoomNum: req.body.RoomNum,
+    StuName: req.body.StuName,
+    PhoneNum: req.body.PhoneNum,
+    Password: req.body.Password
+  };
+  var query = connection.query(`UPDATE STUDENT SET ? WHERE StuID=${StuID}`, student,
+    (err, result) => {
+      if (err) {
+        console.error(err);
+        throw err;
+      }
+      console.log(query);
+      res.send(200, 'success');
+    });
+});
+
+app.post('/api/master/:MastID', (req, res) => {
+  console.log(req.body);
+  const MastID = req.params.MastID;
+  const master = {
+    DormID: req.body.DormID,
+    MastName: req.body.MastName,
+    PhoneNum: req.body.PhoneNum,
+    Password: req.body.Password
+  };
+  var query = connection.query(`UPDATE MASTER SET ? WHERE MastID=${MastID}`, master,
+    (err, result) => {
+      if (err) {
+        console.error(err);
+        throw err;
+      }
+      console.log(query);
+      res.send(200, 'success');
+    });
+});
+
+app.post('/api/delivery_state/:DelivID', (req, res) => {
+  console.log(req.body);
+  const DelivID = req.params.DelivID;
+  var newState = {
+    State: req.body.State,
+    ReceiptDate: null
+  };
+  if (req.body.State == 2) {
+    var now = new Date();
+    now.setHours(now.getHours() + 9);
+    newState = {
+      State: req.body.State,
+      ReceiptDate: now
+    };
+  }
+
+  var query = connection.query(`UPDATE DELIVERY SET ? WHERE DelivID=${DelivID}`, newState,
     (err, result) => {
       if (err) {
         console.error(err);
