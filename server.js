@@ -306,26 +306,6 @@ app.post('/api/student/:StuID', (req, res) => {
     });
 });
 
-app.post('/api/student/:MastID', (req, res) => {
-  console.log(req.body);
-  const MastID = req.params.MastID;
-  const master = {
-    DormID: req.body.DormID,
-    MastName: req.body.StuName,
-    PhoneNum: req.body.PhoneNum,
-    Password: req.body.Password
-  };
-  var query = connection.query(`UPDATE MASTER SET ? WHERE MastID=${StuID}`, master,
-    (err, result) => {
-      if (err) {
-        console.error(err);
-        throw err;
-      }
-      console.log(query);
-      res.send(200, 'success');
-    });
-});
-
 app.post('/api/master/:MastID', (req, res) => {
   console.log(req.body);
   const MastID = req.params.MastID;
