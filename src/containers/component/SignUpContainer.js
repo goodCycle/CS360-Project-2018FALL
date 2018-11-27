@@ -1,18 +1,26 @@
 import React, { Component } from 'react';
-import { Container, Form, Button, Alert } from 'react-bootstrap';
+import { Container, Form, Button, Alert, Modal } from 'react-bootstrap';
 import MaskedFormControl from 'react-bootstrap-maskedinput';
-import qs from 'qs';
 
 class SignUpContainer extends Component {
-  state = {
-    // selectedTab: '#signup',
-    id: null,
-    password: null,
-    name: null,
-    roomNum: null,
-    phoneNum: null,
-    dormName: null,
-    // user: null,
+  constructor() {
+    super();
+    this.state = this.getInitialState();
+  }
+
+  getInitialState() {
+    return {
+      // selectedTab: '#signup',
+      id: null,
+      password: null,
+      name: null,
+      roomNum: null,
+      phoneNum: null,
+      dormName: '세종관',
+      showModal: false,
+      validated: false,
+      // user: null,
+    };
   }
 
   onChangeID = (event) => {
@@ -39,23 +47,23 @@ class SignUpContainer extends Component {
 
   onSelectDorm = (event) => {
     // Preprocess dorm name to dormID
+    console.log('onSelectDorm', event.target.value);
     this.setState({ dormName: event.target.value });
   }
 
-  onClickSubmitButton = () => {
+  onClickSubmitButton = (event) => {
+
+    // event.preventDefault();
+    const form = event.currentTarget;
+    if (form.checkValidity() === false) {
+      event.preventDefault();
+      event.stopPropagation();
+    }
+    this.setState({ validated: true });
     event.preventDefault();
 
-    this.getDormIdFromDormName(this.state.dormName)
+    /* this.getDormIdFromDormName(this.state.dormName)
       .then((dormId) => {
-        /* const params = {
-          StuID: this.state.id,
-          DormID: dormId,
-          RoomNum: this.state.roomNum,
-          StuName: this.state.name,
-          PhoneNum: this.state.phoneNum,
-          Password: this.state.password,
-        };
-        return fetch(`/api/student/?${qs.stringify(params)}`); */
         return fetch('/api/student', {
           method: 'post',
           headers: { 'Content-Type': 'application/json' },
@@ -68,17 +76,20 @@ class SignUpContainer extends Component {
             Password: this.state.password,
           })
         })
-          .then((result) => {
-            console.log('post result', result);
+          .then(() => {
+            this.setState(this.getInitialState());
+            this.setState({ id: '' });
+            this.setState({ showModal: true });
           });
       })
       .catch((error) => {
         console.log('Sign Up onClickSubmit Error', error);
-      });
+      }); */
   }
 
-  getDormIdFromDormName = (dormName) =>
-    fetch(`/api/dormitory/BuildingName/'${dormName}'`)
+  getDormIdFromDormName = (dormName) => {
+    console.log('dormName', dormName);
+    return fetch(`/api/dormitory/BuildingName/'${dormName}'`)
       .then((response) => response.json())
       .then((responseData) => {
         console.log(responseData);
@@ -89,29 +100,39 @@ class SignUpContainer extends Component {
       .catch((error) => {
         console.log('Error fetching getDormIdFromDormName', error);
       });
+  }
+
+  handleClose =() => {
+    this.setState({ showModal: false });
+  }
 
   render() {
     return (
       <Container>
-        {
-          (this.state.isStudent)
-            ? null
-            : <Alert variant={'info'}>
-              Sign Up for Master is not allowed. Please send email to cupid@gmail.com.
-            </Alert>
-        }
-        <Form>
+        <Alert variant={'info'}>
+          Sign Up for Master is not allowed. Please send email to cupid@gmail.com.
+        </Alert>
+        <Form
+          noValidate
+          validated={this.state.validated}
+        >
           <Form.Group controlId="formBasicEmail">
             <Form.Label>ID</Form.Label>
-            <Form.Control type="text" placeholder="Enter Student ID" onChange={this.onChangeID} />
+            <Form.Control type="text" placeholder="Enter Student ID" required onChange={this.onChangeID} />
+            <Form.Control.Feedback>
+              Good!
+            </Form.Control.Feedback>
           </Form.Group>
           <Form.Group controlId="formBasicPassword">
             <Form.Label>Password</Form.Label>
-            <Form.Control type="password" placeholder="Password" onChange={this.onChangePassword} />
+            <Form.Control type="password" placeholder="Password" required onChange={this.onChangePassword} />
           </Form.Group>
           <Form.Group controlId="exampleForm.ControlInput1">
             <Form.Label>Name</Form.Label>
-            <Form.Control type="text" placeholder="Enter Name" onChange={this.onChangeName} />
+            <Form.Control type="text" placeholder="Enter Name" required onChange={this.onChangeName} />
+            <Form.Control.Feedback type="invalid">
+              Please choose a username.
+            </Form.Control.Feedback>
           </Form.Group>
           <Form.Group controlId="exampleForm.ControlSelect1">
             <Form.Label>Dormitory</Form.Label>
@@ -125,16 +146,30 @@ class SignUpContainer extends Component {
           </Form.Group>
           <Form.Group controlId="exampleForm.ControlInput2">
             <Form.Label>Room Number</Form.Label>
-            <Form.Control type="text" placeholder="Enter Room Number" onChange={this.onChangeRoomNum} />
+            <Form.Control type="text" placeholder="Enter Room Number" required onChange={this.onChangeRoomNum} />
           </Form.Group>
           <Form.Group controlId="exampleForm.ControlInput3">
             <Form.Label>Phone Number</Form.Label>
-            <MaskedFormControl type="text" name="phoneNumber" placeholder="010 1234 5678" mask="111 1111 1111" onChange={this.onChangePhoneNum} />
+            <MaskedFormControl type="text" name="phoneNumber" required placeholder="010 1234 5678" mask="111 1111 1111" onChange={this.onChangePhoneNum} />
           </Form.Group>
-          <Button variant="primary" type="submit" onClick={this.onClickSubmitButton}>
+          <Button variant="primary" type="submit" onClick={e => this.onClickSubmitButton(e)}>
             Submit
           </Button>
         </Form>
+        <Modal show={this.state.showModal} onHide={this.handleClose}>
+          <Modal.Header closeButton>
+            <Modal.Title>Your account is created!</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>Go to the Sign In page and sign in with your account</Modal.Body>
+          <Modal.Footer>
+            <Button variant="secondary" onClick={this.handleClose}>
+              Close
+            </Button>
+            <Button variant="primary" type="submit" onClick={this.handleClose}>
+              Go to Sign In
+            </Button>
+          </Modal.Footer>
+        </Modal>
       </Container>
     );
   }

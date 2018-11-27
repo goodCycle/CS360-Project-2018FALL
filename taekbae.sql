@@ -1,3 +1,5 @@
+CREATE USER IF NOT EXISTS 'cupid'@'localhost' IDENTIFIED BY '1234';
+GRANT ALL PRIVILEGES ON taekbae.* TO 'cupid'@'localhost';
 CREATE DATABASE IF NOT EXISTS taekbae;
 USE taekbae;
 
@@ -93,6 +95,3 @@ INSERT INTO MASTER(MastID, DormID, MastName, PhoneNum, Password)
 VALUES(20091001, 22, '장동건', 01044017718, '33334444');
 INSERT INTO MASTER(MastID, DormID, MastName, PhoneNum, Password) 
 VALUES(20101003, 18, '현순주', 01054193300, '55556666');
-
-CREATE USER IF NOT EXISTS 'cupid'@'localhost' IDENTIFIED BY '1234';
-GRANT ALL PRIVILEGES ON taekbae.* TO 'cupid'@'localhost';
