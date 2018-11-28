@@ -93,13 +93,43 @@ function getTableWithCond(table) {
   });
 }
 
+function delTableWithCond(table) {
+  app.post(`/api/delete/${table}/:aName/:aValue`, (req, res) => {
+    connection.query(`DELETE FROM ${table.toUpperCase()}
+    WHERE ${req.params.aName}=${req.params.aValue}`,
+    (err, results) => {
+      if (err) {
+        console.error(err);
+        throw err;
+      }
+      res.send(200, 'success');
+    });
+  });
+}
+
 for (let i = 0; i < tables.length; i += 1) {
   getTable(tables[i]);
   getTableWithCond(tables[i]);
+  delTableWithCond(tables[i]);
 }
 
 app.get('/api/student_delivery/:StuID', (req, res) => {
-  connection.query(`SELECT D.* FROM STUDENT AS S, DELIVERY AS D
+  connection.query(`SELECT D.* FROM STUDENT AS S JOIN DELIVERY AS D
+    WHERE S.DormID=D.DormID and S.RoomNum=D.RoomNum and S.StuID=${req.params.StuID}`,
+  (error, results, fields) => {
+    if (error) {
+      res.status(500).json({ error: { message: error.message } });
+    }
+    console.log('The result is: ', results);
+    console.log('The field is', fields);
+    console.log(req.aName);
+    res.status(200).json({ data: results });
+  });
+});
+
+app.get('/api/student_delivery_recent/:StuID', (req, res) => {
+  connection.query(`SELECT D.* FROM STUDENT AS S JOIN 
+    (SELECT * FROM DELIVERY WHERE ArrivalDate >= NOW() - INTERVAL 1 WEEK) AS D
     WHERE S.DormID=D.DormID and S.RoomNum=D.RoomNum and S.StuID=${req.params.StuID}`,
   (error, results, fields) => {
     if (error) {
@@ -113,7 +143,22 @@ app.get('/api/student_delivery/:StuID', (req, res) => {
 });
 
 app.get('/api/student_mail/:StuID', (req, res) => {
-  connection.query(`SELECT M.* FROM STUDENT AS S, MAIL AS M
+  connection.query(`SELECT M.* FROM STUDENT AS S JOIN MAIL AS M
+    WHERE S.DormID=M.DormID and S.RoomNum=M.RoomNum and S.StuID=${req.params.StuID}`,
+  (error, results, fields) => {
+    if (error) {
+      res.status(500).json({ error: { message: error.message } });
+    }
+    console.log('The result is: ', results);
+    console.log('The field is', fields);
+    console.log(req.aName);
+    res.status(200).json({ data: results });
+  });
+});
+
+app.get('/api/student_mail_recent/:StuID', (req, res) => {
+  connection.query(`SELECT M.* FROM STUDENT AS S JOIN 
+  (SELECT * FROM MAIL WHERE ArrivalDate >= NOW() - INTERVAL 1 WEEK) AS M
     WHERE S.DormID=M.DormID and S.RoomNum=M.RoomNum and S.StuID=${req.params.StuID}`,
   (error, results, fields) => {
     if (error) {
@@ -127,7 +172,22 @@ app.get('/api/student_mail/:StuID', (req, res) => {
 });
 
 app.get('/api/master_delivery/:MastID', (req, res) => {
-  connection.query(`SELECT D.* FROM MASTER AS M, DELIVERY AS D
+  connection.query(`SELECT D.* FROM MASTER AS M JOIN DELIVERY AS D
+    WHERE M.DormID=D.DormID and M.MastID=${req.params.MastID}`,
+  (error, results, fields) => {
+    if (error) {
+      res.status(500).json({ error: { message: error.message } });
+    }
+    console.log('The result is: ', results);
+    console.log('The field is', fields);
+    console.log(req.aName);
+    res.status(200).json({ data: results });
+  });
+});
+
+app.get('/api/master_delivery_recent/:MastID', (req, res) => {
+  connection.query(`SELECT D.* FROM MASTER AS M JOIN 
+    (SELECT * FROM DELIVERY WHERE ArrivalDate >= NOW() - INTERVAL 1 WEEK) AS D
     WHERE M.DormID=D.DormID and M.MastID=${req.params.MastID}`,
   (error, results, fields) => {
     if (error) {
@@ -141,7 +201,22 @@ app.get('/api/master_delivery/:MastID', (req, res) => {
 });
 
 app.get('/api/master_mail/:MastID', (req, res) => {
-  connection.query(`SELECT M.* FROM MASTER AS A, MAIL AS M
+  connection.query(`SELECT M.* FROM MASTER AS A JOIN MAIL AS M
+    WHERE A.DormID=M.DormID and A.MastID=${req.params.MastID}`,
+  (error, results, fields) => {
+    if (error) {
+      res.status(500).json({ error: { message: error.message } });
+    }
+    console.log('The result is: ', results);
+    console.log('The field is', fields);
+    console.log(req.aName);
+    res.status(200).json({ data: results });
+  });
+});
+
+app.get('/api/master_mail_recent/:MastID', (req, res) => {
+  connection.query(`SELECT M.* FROM MASTER AS A JOIN 
+    (SELECT * FROM MAIL WHERE ArrivalDate >= NOW() - INTERVAL 1 WEEK) AS M
     WHERE A.DormID=M.DormID and A.MastID=${req.params.MastID}`,
   (error, results, fields) => {
     if (error) {
@@ -184,6 +259,39 @@ app.get('/api/login/:studentOrMaster', (req, res) => {
     });
   }
 });
+
+app.get('/api/master_delivery_cnt/:MastID', (req, res) => {
+  connection.query(`SELECT D.DormID, COUNT(*) AS Cnt
+    FROM DELIVERY AS D, MASTER AS M
+    WHERE D.DormID=M.DormID AND M.MastID=${req.params.MastID}
+    GROUP BY D.DormID`,
+  (error, results, fields) => {
+    if (error) {
+      res.status(500).json({ error: { message: error.message } });
+    }
+    console.log('The result is: ', results);
+    console.log('The field is', fields);
+    console.log(req.aName);
+    res.status(200).json({ data: results });
+  });
+});
+
+app.get('/api/master_mail_cnt/:MastID', (req, res) => {
+  connection.query(`SELECT D.DormID, COUNT(*) AS Cnt
+    FROM MAIL AS D, MASTER AS M
+    WHERE D.DormID=M.DormID AND M.MastID=${req.params.MastID}
+    GROUP BY D.DormID`,
+  (error, results, fields) => {
+    if (error) {
+      res.status(500).json({ error: { message: error.message } });
+    }
+    console.log('The result is: ', results);
+    console.log('The field is', fields);
+    console.log(req.aName);
+    res.status(200).json({ data: results });
+  });
+});
+
 // app.get('/api/student/'+studentid, (req, res) => {
 //   connection.query('SELECT * FROM '+table.toUpperCase(), (error, results, fields) => {
 //     if (error) {
@@ -329,18 +437,9 @@ app.post('/api/master/:MastID', (req, res) => {
 app.post('/api/delivery_state/:DelivID', (req, res) => {
   console.log(req.body);
   const DelivID = req.params.DelivID;
-  var newState = {
+  const newState = {
     State: req.body.State,
-    ReceiptDate: null
   };
-  if (req.body.State == 2) {
-    var now = new Date();
-    now.setHours(now.getHours() + 9);
-    newState = {
-      State: req.body.State,
-      ReceiptDate: now
-    };
-  }
 
   var query = connection.query(`UPDATE DELIVERY SET ? WHERE DelivID=${DelivID}`, newState,
     (err, result) => {
