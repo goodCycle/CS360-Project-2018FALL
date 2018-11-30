@@ -41,7 +41,6 @@ export class AppContainer extends Component {
   onClickSubmitButton = (event) => {
     event.preventDefault();
 
-    this.setState({ logining: true });
     const params = {
       id: this.state.id,
       password: this.state.password,
@@ -145,7 +144,7 @@ export class AppContainer extends Component {
       {
         (this.state.selectedTab === '#signin') // eslint-disable-line no-nested-ternary
           ? this.renderLogin()
-          : <SignUpContainer />
+          : this.props.history.push({ pathname: '/signup' })
       }
     </Container>
   );
