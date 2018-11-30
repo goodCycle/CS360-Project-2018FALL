@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import { Container, Form, Button, Alert, Modal } from 'react-bootstrap';
 import MaskedFormControl from 'react-bootstrap-maskedinput';
 
@@ -51,40 +53,43 @@ class SignUpContainer extends Component {
     this.setState({ dormName: event.target.value });
   }
 
-  onClickSubmitButton = (event) => {
+  onClickGoToSignIn = () => {
+    console.log('onClickGoToSignIn');
+    this.props.history.push({ pathname: '/' });
+  }
 
-    // event.preventDefault();
+  onClickSubmitButton = (event) => {
     const form = event.currentTarget;
-    if (form.checkValidity() === false) {
+
+    if (form.checkValidity()) {
+      this.getDormIdFromDormName(this.state.dormName)
+        .then((dormId) => {
+          return fetch('/api/student', {
+            method: 'post',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              StuID: this.state.id,
+              DormID: dormId,
+              RoomNum: this.state.roomNum,
+              StuName: this.state.name,
+              PhoneNum: this.state.phoneNum,
+              Password: this.state.password,
+            })
+          })
+            .then(() => {
+              this.setState(this.getInitialState());
+              this.setState({ id: '' });
+              this.setState({ showModal: true });
+            });
+        })
+        .catch((error) => {
+          console.log('Sign Up onClickSubmit Error', error);
+        });
       event.preventDefault();
-      event.stopPropagation();
+      return;
     }
     this.setState({ validated: true });
     event.preventDefault();
-
-    /* this.getDormIdFromDormName(this.state.dormName)
-      .then((dormId) => {
-        return fetch('/api/student', {
-          method: 'post',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            StuID: this.state.id,
-            DormID: dormId,
-            RoomNum: this.state.roomNum,
-            StuName: this.state.name,
-            PhoneNum: this.state.phoneNum,
-            Password: this.state.password,
-          })
-        })
-          .then(() => {
-            this.setState(this.getInitialState());
-            this.setState({ id: '' });
-            this.setState({ showModal: true });
-          });
-      })
-      .catch((error) => {
-        console.log('Sign Up onClickSubmit Error', error);
-      }); */
   }
 
   getDormIdFromDormName = (dormName) => {
@@ -115,23 +120,27 @@ class SignUpContainer extends Component {
         <Form
           noValidate
           validated={this.state.validated}
+          onClick={e => this.onClickSubmitButton(e)}
         >
           <Form.Group controlId="formBasicEmail">
             <Form.Label>ID</Form.Label>
             <Form.Control type="text" placeholder="Enter Student ID" required onChange={this.onChangeID} />
-            <Form.Control.Feedback>
-              Good!
+            <Form.Control.Feedback type="invalid">
+              Please enter your student ID.
             </Form.Control.Feedback>
           </Form.Group>
           <Form.Group controlId="formBasicPassword">
             <Form.Label>Password</Form.Label>
             <Form.Control type="password" placeholder="Password" required onChange={this.onChangePassword} />
+            <Form.Control.Feedback type="invalid">
+              Password should be longer than 8 digits.
+            </Form.Control.Feedback>
           </Form.Group>
           <Form.Group controlId="exampleForm.ControlInput1">
             <Form.Label>Name</Form.Label>
             <Form.Control type="text" placeholder="Enter Name" required onChange={this.onChangeName} />
             <Form.Control.Feedback type="invalid">
-              Please choose a username.
+              Please write your real name.
             </Form.Control.Feedback>
           </Form.Group>
           <Form.Group controlId="exampleForm.ControlSelect1">
@@ -147,12 +156,18 @@ class SignUpContainer extends Component {
           <Form.Group controlId="exampleForm.ControlInput2">
             <Form.Label>Room Number</Form.Label>
             <Form.Control type="text" placeholder="Enter Room Number" required onChange={this.onChangeRoomNum} />
+            <Form.Control.Feedback type="invalid">
+              Please enter the room number for this semester.
+            </Form.Control.Feedback>
           </Form.Group>
           <Form.Group controlId="exampleForm.ControlInput3">
             <Form.Label>Phone Number</Form.Label>
             <MaskedFormControl type="text" name="phoneNumber" required placeholder="010 1234 5678" mask="111 1111 1111" onChange={this.onChangePhoneNum} />
+            <Form.Control.Feedback type="invalid">
+              Please enter your phone number.
+            </Form.Control.Feedback>
           </Form.Group>
-          <Button variant="primary" type="submit" onClick={e => this.onClickSubmitButton(e)}>
+          <Button variant="primary" type="submit">
             Submit
           </Button>
         </Form>
@@ -165,7 +180,7 @@ class SignUpContainer extends Component {
             <Button variant="secondary" onClick={this.handleClose}>
               Close
             </Button>
-            <Button variant="primary" type="submit" onClick={this.handleClose}>
+            <Button variant="primary" type="submit" onClick={this.onClickGoToSignIn}>
               Go to Sign In
             </Button>
           </Modal.Footer>
@@ -174,5 +189,11 @@ class SignUpContainer extends Component {
     );
   }
 }
+
+SignUpContainer.propTypes = {
+  history: PropTypes.shape({
+    push: PropTypes.func.isRequired,
+  }).isRequired,
+};
 
 export default SignUpContainer;

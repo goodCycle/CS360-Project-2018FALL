@@ -144,7 +144,7 @@ export class AppContainer extends Component {
       {
         (this.state.selectedTab === '#signin') // eslint-disable-line no-nested-ternary
           ? this.renderLogin()
-          : <SignUpContainer />
+          : this.props.history.push({ pathname: '/signup' })
       }
     </Container>
   );
