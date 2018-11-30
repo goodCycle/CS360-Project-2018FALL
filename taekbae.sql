@@ -46,6 +46,32 @@ CREATE TABLE MASTER (
 	PhoneNum integer,
 	Password varchar(20) NOT NULL);
 
+DELIMITER $$
+CREATE TRIGGER UpdateDelivState
+	BEFORE UPDATE ON DELIVERY
+	FOR EACH ROW
+BEGIN
+	IF NEW.State=2 THEN
+		SET NEW.ReceiptDate=NOW();
+	ELSE
+		SET NEW.ReceiptDate=NULL;
+	END IF;
+END$$
+DELIMITER ;
+
+DELIMITER $$
+CREATE TRIGGER UpdateMailState
+	BEFORE UPDATE ON MAIL
+	FOR EACH ROW
+BEGIN
+	IF NEW.State=2 THEN
+		SET NEW.ReceiptDate=NOW();
+	ELSE
+		SET NEW.ReceiptDate=NULL;
+	END IF;
+END$$
+DELIMITER ;
+
 #tuple insertion	
 #Dormitory tuples
 INSERT INTO DORMITORY(DormID, BuildingNum, BuildingName) VALUES(1, 'E8', '세종관');

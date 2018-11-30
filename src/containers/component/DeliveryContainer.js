@@ -23,7 +23,7 @@ class DeliveryContainer extends Component {
   }
 
   componentDidMount() {
-    const getRoomDeliv = () => fetch(`/api/student_delivery/${this.state.userId}`)
+    const getRoomDeliv = () => fetch(`/api/student_delivery_recent/${this.state.userId}`)
       .then((response) => response.json())
       .then((responseData) => {
         console.log(responseData.data);
@@ -48,7 +48,7 @@ class DeliveryContainer extends Component {
         State: StateNum
       })
     })
-      .then(() => fetch(`/api/student_delivery/${this.state.userId}`)
+      .then(() => fetch(`/api/student_delivery_recent/${this.state.userId}`)
         .then((response) => response.json())
         .then((responseData) => {
           console.log(responseData.data);
