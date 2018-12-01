@@ -52,7 +52,7 @@ CREATE TRIGGER UpdateDelivState
 	FOR EACH ROW
 BEGIN
 	IF NEW.State=2 THEN
-		SET NEW.ReceiptDate=NOW();
+		SET NEW.ReceiptDate=NOW() + INTERVAL 9 HOUR;
 	ELSE
 		SET NEW.ReceiptDate=NULL;
 	END IF;
@@ -65,7 +65,7 @@ CREATE TRIGGER UpdateMailState
 	FOR EACH ROW
 BEGIN
 	IF NEW.State=2 THEN
-		SET NEW.ReceiptDate=NOW();
+		SET NEW.ReceiptDate=NOW() + INTERVAL 9 HOUR;
 	ELSE
 		SET NEW.ReceiptDate=NULL;
 	END IF;
@@ -103,8 +103,8 @@ INSERT INTO DELIVERY(DelivID, DormID, RoomNum, Receiver, Sender, Content, Locati
 VALUES(151515, 22, 322, '윤형준', '이찬욱', '문구류', '대전광역시 유성구 구성동 한국과학기술원 지혜관 322호', 1, NOW(), NULL);
 
 #Mail tuples
-INSERT INTO MAIL(MailID, DormID, RoomNum, Receiver, Sender, Location, State)
-VALUES(3030, 22, 322, '윤형준', '이찬욱', '대전광역시 유성구 구성동 한국과학기술원 지혜관 322호', 1);
+INSERT INTO MAIL(MailID, DormID, RoomNum, Receiver, Sender, Location, State, ArrivalDate, ReceiptDate)
+VALUES(3030, 22, 322, '윤형준', '이찬욱', '대전광역시 유성구 구성동 한국과학기술원 지혜관 322호', 1, NOW(), NULL);
 
 #Student tuples
 INSERT INTO STUDENT(StuID, DormID, RoomNum, StuName, PhoneNum, Password) 
