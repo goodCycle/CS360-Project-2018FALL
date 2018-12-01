@@ -1,8 +1,11 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
 import { Container, Form, Button, Alert, Modal } from 'react-bootstrap';
 import MaskedFormControl from 'react-bootstrap-maskedinput';
+
+const submitButtonStyle = {
+  marginTop: 15,
+};
 
 class SignUpContainer extends Component {
   constructor() {
@@ -51,11 +54,6 @@ class SignUpContainer extends Component {
     // Preprocess dorm name to dormID
     console.log('onSelectDorm', event.target.value);
     this.setState({ dormName: event.target.value });
-  }
-
-  onClickGoToSignIn = () => {
-    console.log('onClickGoToSignIn');
-    this.props.history.push({ pathname: '/' });
   }
 
   onClickSubmitButton = (event) => {
@@ -147,10 +145,28 @@ class SignUpContainer extends Component {
             <Form.Label>Dormitory</Form.Label>
             <Form.Control as="select" onChange={this.onSelectDorm}>
               <option>세종관</option>
-              <option>아름관</option>
+              <option>갈릴레이관</option>
+              <option>여울관</option>
+              <option>나들관</option>
+              <option>다솜관</option>
+              <option>희망관</option>
+              <option>기혼자기숙사</option>
+              <option>스타트업빌리지</option>
+              <option>인터네셔널빌리지C</option>
+              <option>인터네셔널빌리지A</option>
+              <option>인터네셔널빌리지B</option>
+              <option>미르관</option>
+              <option>나래관</option>
+              <option>외국인교수 아파트</option>
+              <option>사랑관</option>
+              <option>교직원 숙소</option>
+              <option>소망관</option>
               <option>성실관</option>
+              <option>진리관</option>
+              <option>아름관</option>
               <option>신뢰관</option>
               <option>지혜관</option>
+              <option>유레카관</option>
             </Form.Control>
           </Form.Group>
           <Form.Group controlId="exampleForm.ControlInput2">
@@ -167,7 +183,7 @@ class SignUpContainer extends Component {
               Please enter your phone number.
             </Form.Control.Feedback>
           </Form.Group>
-          <Button variant="primary" type="submit">
+          <Button style={submitButtonStyle} variant="primary" type="submit">
             Submit
           </Button>
         </Form>
@@ -180,7 +196,7 @@ class SignUpContainer extends Component {
             <Button variant="secondary" onClick={this.handleClose}>
               Close
             </Button>
-            <Button variant="primary" type="submit" onClick={this.onClickGoToSignIn}>
+            <Button variant="primary" type="submit" onClick={this.props.onClickGoToSignIn}>
               Go to Sign In
             </Button>
           </Modal.Footer>
@@ -191,9 +207,7 @@ class SignUpContainer extends Component {
 }
 
 SignUpContainer.propTypes = {
-  history: PropTypes.shape({
-    push: PropTypes.func.isRequired,
-  }).isRequired,
+  onClickGoToSignIn: PropTypes.func.isRequired,
 };
 
 export default SignUpContainer;
