@@ -1,8 +1,11 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
 import { Container, Form, Button, Alert, Modal } from 'react-bootstrap';
 import MaskedFormControl from 'react-bootstrap-maskedinput';
+
+const submitButtonStyle = {
+  marginTop: 15,
+};
 
 class SignUpContainer extends Component {
   constructor() {
@@ -51,11 +54,6 @@ class SignUpContainer extends Component {
     // Preprocess dorm name to dormID
     console.log('onSelectDorm', event.target.value);
     this.setState({ dormName: event.target.value });
-  }
-
-  onClickGoToSignIn = () => {
-    console.log('onClickGoToSignIn');
-    this.props.history.push({ pathname: '/' });
   }
 
   onClickSubmitButton = (event) => {
@@ -167,7 +165,7 @@ class SignUpContainer extends Component {
               Please enter your phone number.
             </Form.Control.Feedback>
           </Form.Group>
-          <Button variant="primary" type="submit">
+          <Button style={submitButtonStyle} variant="primary" type="submit">
             Submit
           </Button>
         </Form>
@@ -180,7 +178,7 @@ class SignUpContainer extends Component {
             <Button variant="secondary" onClick={this.handleClose}>
               Close
             </Button>
-            <Button variant="primary" type="submit" onClick={this.onClickGoToSignIn}>
+            <Button variant="primary" type="submit" onClick={this.props.onClickGoToSignIn}>
               Go to Sign In
             </Button>
           </Modal.Footer>
@@ -191,9 +189,7 @@ class SignUpContainer extends Component {
 }
 
 SignUpContainer.propTypes = {
-  history: PropTypes.shape({
-    push: PropTypes.func.isRequired,
-  }).isRequired,
+  onClickGoToSignIn: PropTypes.func.isRequired,
 };
 
 export default SignUpContainer;

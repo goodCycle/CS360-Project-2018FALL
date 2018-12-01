@@ -5,6 +5,10 @@ import { Button, Container, Form, Navbar, Nav, Alert } from 'react-bootstrap';
 import qs from 'qs';
 import SignUpContainer from './component/SignUpContainer';
 
+const submitButtonStyle = {
+  marginTop: 15,
+};
+
 export class AppContainer extends Component {
   state = {
     selectedTab: '#signin',
@@ -77,6 +81,11 @@ export class AppContainer extends Component {
       });
   }
 
+  onClickGoToSignIn = () => {
+    this.setState({ selectedTab: '#signin' });
+    this.props.history.push({ pathname: '/' });
+  }
+
   renderLogin = () => (
     <Form>
       <div key={this.state.selectedTab} className="mb-3">
@@ -107,7 +116,7 @@ export class AppContainer extends Component {
         <Form.Label>Password</Form.Label>
         <Form.Control type="password" placeholder="Password" onChange={this.onChangePassword} />
       </Form.Group>
-      <Button variant="primary" type="submit" onClick={this.onClickSubmitButton}>
+      <Button variant="primary" type="submit" onClick={this.onClickSubmitButton} style={submitButtonStyle}>
         Submit
       </Button>
     </Form>
@@ -144,7 +153,7 @@ export class AppContainer extends Component {
       {
         (this.state.selectedTab === '#signin') // eslint-disable-line no-nested-ternary
           ? this.renderLogin()
-          : this.props.history.push({ pathname: '/signup' })
+          : <SignUpContainer onClickGoToSignIn={this.onClickGoToSignIn} />
       }
     </Container>
   );
