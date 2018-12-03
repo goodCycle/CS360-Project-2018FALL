@@ -440,16 +440,26 @@ app.post('/api/delivery_state/:DelivID', (req, res) => {
   let newState = {
     State: req.body.State,
   };
-  if (req.body.State === 2) {
-    const now = new Date();
-    now.setHours(now.getHours() + 9);
-    newState = {
-      State: req.body.State,
-      ReceiptDate: now
-    };
-  }
 
   const query = connection.query(`UPDATE DELIVERY SET ? WHERE DelivID=${DelivID}`, newState,
+    (err, result) => {
+      if (err) {
+        console.error(err);
+        throw err;
+      }
+      console.log(query);
+      res.send(200, 'success');
+    });
+});
+
+app.post('/api/mail_state/:MailID', (req, res) => {
+  console.log(req.body);
+  const MailID = req.params.MailID;
+  let newState = {
+    State: req.body.State,
+  };
+
+  const query = connection.query(`UPDATE MAIL SET ? WHERE MailID=${MailID}`, newState,
     (err, result) => {
       if (err) {
         console.error(err);
