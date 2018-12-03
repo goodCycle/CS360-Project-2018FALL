@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Container, Jumbotron, Nav, Row, Col, Tab, Dropdown, Button, ButtonGroup } from 'react-bootstrap';
+import { Container, Jumbotron, Nav, Row, Col, Tab, Dropdown, Button, ButtonGroup, Table } from 'react-bootstrap';
 // import PropTypes from 'prop-types';
 
 class DeliveryContainer extends Component {
@@ -33,6 +33,23 @@ class DeliveryContainer extends Component {
         console.log('Error fetching getRoomDeliv', error);
       });
 
+    const getDormDeliv = () => fetch(`/api/master_delivery/${this.state.userId}`)
+      .then((response) => response.json())
+      .then((responseData) => {
+        console.log(responseData.data);
+        this.setState({ deliveryList: responseData.data });
+      })
+      .catch((error) => {
+        console.log('Error fetching getRoomDeliv', error);
+      });
+
+    if (this.props.isMaster === true) {
+      return getDormDeliv()
+        .then(() => {
+          console.log(this.state.deliveryList);
+          this.setState({ loaded: true });
+        });
+    }
     return getRoomDeliv()
       .then(() => {
         this.setState({ loaded: true });
@@ -61,6 +78,24 @@ class DeliveryContainer extends Component {
     return updateState();
   }
 
+  deleteDeliv(DelivID) {
+    const delDeliv = () => fetch(`/api/delete/delivery/DelivID/${DelivID}`, {
+      method: 'post',
+      headers: { 'Content-Type': 'application/json' }
+    })
+      .then(() => fetch(`/api/master_delivery/${this.state.userId}`)
+        .then((response) => response.json())
+        .then((responseData) => {
+          console.log(responseData.data);
+          this.setState({ deliveryList: responseData.data });
+        })
+        .catch((error) => {
+          console.log('Error fetching getRoomDeliv', error);
+        }));
+
+    return delDeliv();
+  }
+
   render() {
     const stateTitle = (deliv) => {
       if (deliv === 1) {
@@ -73,6 +108,60 @@ class DeliveryContainer extends Component {
       return '의문의 상태';
     };
 
+    if (this.props.isMaster === false) {
+      return (
+        (this.state.loaded === false)
+          ? <Container>Loading</Container>
+          : <Table responsive style={{ marginBottom: 100, marginTop: 20 }}>
+            <thead>
+              <tr>
+                <th>도착 시간</th>
+                <th>방 번호</th>
+                <th>택배 번호</th>
+                <th>받는 이</th>
+                <th>보낸 이</th>
+                <th>택배 상태</th>
+                <th />
+              </tr>
+            </thead>
+            <tbody>
+              {
+                (this.state.deliveryList.map((item) => (
+                  <tr>
+                    {
+                      item.ArrivalDate !== null &&
+                      <td>
+                        {item.ArrivalDate.split('T')[0]}
+                      </td>
+                    }
+                    <td>
+                      {item.RoomNum}
+                    </td>
+                    <td>
+                      {item.DelivID}
+                    </td>
+                    <td>
+                      {item.Receiver}
+                    </td>
+                    <td>
+                      {item.Sender}
+                    </td>
+                    <td>
+                      {stateTitle(item.State)}
+                    </td>
+                    <td>
+                      <Button
+                        variant="outline-secondary"
+                        onClick={this.deleteDeliv.bind(this, item.DelivID)}
+                      >DELETE</Button>
+                    </td>
+                  </tr>
+                )))
+              }
+            </tbody>
+          </Table>
+      );
+    }
     return (
       (this.state.loaded === false)
         ? <Container>Loading</Container>
@@ -84,7 +173,7 @@ class DeliveryContainer extends Component {
                 <Nav variant="pills" className="flex-column" style={{ backgroundColor: '#F6F6F9', borderRadius: '5px' }}>
                   <Nav.Item style={{ color: 'white' }}>
                     <Nav.Link eventKey="default">
-                        받는 이 / 배송 날짜
+                      받는 이 / 배송 날짜
                     </Nav.Link>
                   </Nav.Item>
                   {
