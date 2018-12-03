@@ -8,9 +8,10 @@ class MasterContainer extends Component {
   state = {
     selectedTab: '#delivery',
     students: [],
+    /* eslint-disable-next-line react/prop-types */
+    userId: this.props.location.state.user.MastID,
   }
   componentDidMount() {
-    this.getStudents();
   }
 
   onSelect= (selectedKey) => {
@@ -18,19 +19,8 @@ class MasterContainer extends Component {
     console.log(selectedKey);
   }
 
-  getStudents = () =>
-    fetch('/api/student')
-      .then((response) => response.json())
-      .then((responseData) => {
-        console.log(responseData);
-        this.setState({ students: responseData.data.students });
-      })
-      .catch((error) => {
-        console.log('Error fetching getStudents', error);
-      });
-
   render() {
-    const { selectedTab } = this.state;
+    const { selectedTab, userId } = this.state;
     return (
       <Container>
         <Navbar bg="light" expand="lg">
@@ -55,10 +45,10 @@ class MasterContainer extends Component {
         </Navbar>
         {
           (selectedTab === '#delivery') // eslint-disable-line no-nested-ternary
-            ? <DeliveryContainer isMaster />
+            ? <DeliveryContainer isMaster id={userId} />
             : (selectedTab === '#mail')
-              ? <MailContainer isMaster />
-              : <MyPageContainer isMaster />
+              ? <MailContainer isMaster id={userId} />
+              : <MyPageContainer isMaster id={userId} />
         }
       </Container>
 

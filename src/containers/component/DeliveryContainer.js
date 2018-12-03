@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Container, Jumbotron, Nav, Row, Col, Tab, Dropdown, Button, ButtonGroup } from 'react-bootstrap';
-// import PropTypes from 'prop-types';
+import PropTypes from 'prop-types';
 
 class DeliveryContainer extends Component {
   constructor(props) {
@@ -23,7 +23,7 @@ class DeliveryContainer extends Component {
   }
 
   componentDidMount() {
-    const getRoomDeliv = () => fetch(`/api/student_delivery_recent/${this.state.userId}`)
+    const getRoomDelivStu = (userId) => fetch(`/api/student_delivery_recent/${userId}`)
       .then((response) => response.json())
       .then((responseData) => {
         console.log(responseData.data);
@@ -33,13 +33,29 @@ class DeliveryContainer extends Component {
         console.log('Error fetching getRoomDeliv', error);
       });
 
-    return getRoomDeliv()
+    const getRoomDelivMast = (userId) => fetch(`/api/master_delivery_recent/${userId}`)
+      .then((response) => response.json())
+      .then((responseData) => {
+        console.log(responseData.data);
+        this.setState({ deliveryList: responseData.data });
+      })
+      .catch((error) => {
+        console.log('Error fetching getRoomDeliv', error);
+      });
+
+    if (this.props.isMaster) {
+      return getRoomDelivMast(this.state.userId)
+        .then(() => {
+          this.setState({ loaded: true });
+        });
+    }
+    return getRoomDelivStu(this.state.userId)
       .then(() => {
         this.setState({ loaded: true });
       });
   }
 
-  changeState(DelivID, StateNum) {
+  changeState = (DelivID, StateNum) => {
     console.log(DelivID);
     const updateState = () => fetch(`/api/delivery_state/${DelivID}`, {
       method: 'post',
@@ -151,13 +167,13 @@ class DeliveryContainer extends Component {
                           </Button>
                           <Dropdown.Toggle split variant="info" id="dropdown-split-basic" />
                           <Dropdown.Menu>
-                            <Dropdown.Item onClick={this.changeState.bind(this, item.DelivID, 1)}>
+                            <Dropdown.Item onClick={(this.props.isMaster) ? null : this.changeState(item.DelivID, 1)}>
                               미수령
                             </Dropdown.Item>
-                            <Dropdown.Item onClick={this.changeState.bind(this, item.DelivID, 2)}>
+                            <Dropdown.Item onClick={(this.props.isMaster) ? null : this.changeState(item.DelivID, 2)}>
                               수령 완료
                             </Dropdown.Item>
-                            <Dropdown.Item onClick={this.changeState.bind(this, item.DelivID, 3)}>
+                            <Dropdown.Item onClick={(this.props.isMaster) ? null : this.changeState(item.DelivID, 3)}>
                               반송 신청
                             </Dropdown.Item>
                           </Dropdown.Menu>
@@ -175,7 +191,7 @@ class DeliveryContainer extends Component {
 }
 
 DeliveryContainer.propTypes = {
-  // isMaster: PropTypes.bool.isRequired,
+  isMaster: PropTypes.bool.isRequired,
   // id: PropTypes.integer.isRequired,
 };
 
