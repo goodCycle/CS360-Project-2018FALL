@@ -115,7 +115,8 @@ for (let i = 0; i < tables.length; i += 1) {
 
 app.get('/api/student_delivery/:StuID', (req, res) => {
   connection.query(`SELECT D.* FROM STUDENT AS S JOIN DELIVERY AS D
-    WHERE S.DormID=D.DormID and S.RoomNum=D.RoomNum and S.StuID=${req.params.StuID}`,
+    WHERE S.DormID=D.DormID and S.RoomNum=D.RoomNum and S.StuID=${req.params.StuID}
+    ORDER BY ArrivalDate desc`,
   (error, results, fields) => {
     if (error) {
       res.status(500).json({ error: { message: error.message } });
@@ -130,7 +131,8 @@ app.get('/api/student_delivery/:StuID', (req, res) => {
 app.get('/api/student_delivery_recent/:StuID', (req, res) => {
   connection.query(`SELECT D.* FROM STUDENT AS S JOIN 
     (SELECT * FROM DELIVERY WHERE ArrivalDate >= NOW() - INTERVAL 1 WEEK) AS D
-    WHERE S.DormID=D.DormID and S.RoomNum=D.RoomNum and S.StuID=${req.params.StuID}`,
+    WHERE S.DormID=D.DormID and S.RoomNum=D.RoomNum and S.StuID=${req.params.StuID}
+    ORDER BY ArrivalDate desc`,
   (error, results, fields) => {
     if (error) {
       res.status(500).json({ error: { message: error.message } });
@@ -144,7 +146,8 @@ app.get('/api/student_delivery_recent/:StuID', (req, res) => {
 
 app.get('/api/student_mail/:StuID', (req, res) => {
   connection.query(`SELECT M.* FROM STUDENT AS S JOIN MAIL AS M
-    WHERE S.DormID=M.DormID and S.RoomNum=M.RoomNum and S.StuID=${req.params.StuID}`,
+    WHERE S.DormID=M.DormID and S.RoomNum=M.RoomNum and S.StuID=${req.params.StuID}
+    ORDER BY ArrivalDate desc`,
   (error, results, fields) => {
     if (error) {
       res.status(500).json({ error: { message: error.message } });
@@ -159,7 +162,8 @@ app.get('/api/student_mail/:StuID', (req, res) => {
 app.get('/api/student_mail_recent/:StuID', (req, res) => {
   connection.query(`SELECT M.* FROM STUDENT AS S JOIN 
   (SELECT * FROM MAIL WHERE ArrivalDate >= NOW() - INTERVAL 1 WEEK) AS M
-    WHERE S.DormID=M.DormID and S.RoomNum=M.RoomNum and S.StuID=${req.params.StuID}`,
+    WHERE S.DormID=M.DormID and S.RoomNum=M.RoomNum and S.StuID=${req.params.StuID}
+    ORDER BY ArrivalDate desc`,
   (error, results, fields) => {
     if (error) {
       res.status(500).json({ error: { message: error.message } });
@@ -173,7 +177,8 @@ app.get('/api/student_mail_recent/:StuID', (req, res) => {
 
 app.get('/api/master_delivery/:MastID', (req, res) => {
   connection.query(`SELECT D.* FROM MASTER AS M JOIN DELIVERY AS D
-    WHERE M.DormID=D.DormID and M.MastID=${req.params.MastID}`,
+    WHERE M.DormID=D.DormID and M.MastID=${req.params.MastID}
+    ORDER BY ArrivalDate desc`,
   (error, results, fields) => {
     if (error) {
       res.status(500).json({ error: { message: error.message } });
@@ -188,7 +193,8 @@ app.get('/api/master_delivery/:MastID', (req, res) => {
 app.get('/api/master_delivery_recent/:MastID', (req, res) => {
   connection.query(`SELECT D.* FROM MASTER AS M JOIN 
     (SELECT * FROM DELIVERY WHERE ArrivalDate >= NOW() - INTERVAL 1 WEEK) AS D
-    WHERE M.DormID=D.DormID and M.MastID=${req.params.MastID}`,
+    WHERE M.DormID=D.DormID and M.MastID=${req.params.MastID}
+    ORDER BY ArrivalDate desc`,
   (error, results, fields) => {
     if (error) {
       res.status(500).json({ error: { message: error.message } });
@@ -202,7 +208,8 @@ app.get('/api/master_delivery_recent/:MastID', (req, res) => {
 
 app.get('/api/master_mail/:MastID', (req, res) => {
   connection.query(`SELECT M.* FROM MASTER AS A JOIN MAIL AS M
-    WHERE A.DormID=M.DormID and A.MastID=${req.params.MastID}`,
+    WHERE A.DormID=M.DormID and A.MastID=${req.params.MastID}
+    ORDER BY ArrivalDate desc`,
   (error, results, fields) => {
     if (error) {
       res.status(500).json({ error: { message: error.message } });
@@ -217,7 +224,8 @@ app.get('/api/master_mail/:MastID', (req, res) => {
 app.get('/api/master_mail_recent/:MastID', (req, res) => {
   connection.query(`SELECT M.* FROM MASTER AS A JOIN 
     (SELECT * FROM MAIL WHERE ArrivalDate >= NOW() - INTERVAL 1 WEEK) AS M
-    WHERE A.DormID=M.DormID and A.MastID=${req.params.MastID}`,
+    WHERE A.DormID=M.DormID and A.MastID=${req.params.MastID}
+    ORDER BY ArrivalDate desc`,
   (error, results, fields) => {
     if (error) {
       res.status(500).json({ error: { message: error.message } });

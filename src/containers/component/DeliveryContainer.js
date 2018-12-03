@@ -108,7 +108,7 @@ class DeliveryContainer extends Component {
       return '의문의 상태';
     };
 
-    if (this.props.isMaster === false) {
+    if (this.props.isMaster === true) {
       return (
         (this.state.loaded === false)
           ? <Container>Loading</Container>
@@ -128,12 +128,14 @@ class DeliveryContainer extends Component {
               {
                 (this.state.deliveryList.map((item) => (
                   <tr>
-                    {
-                      item.ArrivalDate !== null &&
-                      <td>
-                        {item.ArrivalDate.split('T')[0]}
-                      </td>
-                    }
+                    <td>
+                      {
+                        item.ArrivalDate !== null &&
+                        <div>
+                          {item.ArrivalDate.split('T')[0]}
+                        </div>
+                      }
+                    </td>
                     <td>
                       {item.RoomNum}
                     </td>
