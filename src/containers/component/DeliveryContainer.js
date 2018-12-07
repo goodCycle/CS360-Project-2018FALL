@@ -36,38 +36,56 @@ class DeliveryContainer extends Component {
   }
 
   componentDidMount() {
-    const getRoomDeliv = () => fetch(`/api/student_delivery_recent/${this.state.userId}`)
-      .then((response) => response.json())
-      .then((responseData) => {
-        console.log(responseData.data);
-        this.setState({ deliveryList: responseData.data });
-      })
-      .catch((error) => {
-        console.log('Error fetching getRoomDeliv', error);
-      });
-
-    const getDormDeliv = () => fetch(`/api/master_delivery/${this.state.userId}`)
-      .then((response) => response.json())
-      .then((responseData) => {
-        console.log(responseData.data);
-        this.setState({ deliveryList: responseData.data });
-      })
-      .catch((error) => {
-        console.log('Error fetching getRoomDeliv', error);
-      });
-
     if (this.props.isMaster === true) {
-      return getDormDeliv()
+      return this.getDormDeliv()
         .then(() => {
           console.log(this.state.deliveryList);
           this.setState({ loaded: true });
         });
     }
-    return getRoomDeliv()
+    return this.getRoomDeliv()
       .then(() => {
         this.setState({ loaded: true });
       });
   }
+
+  componentDidUpdate(prevProps) {
+    if (this.props.updated !== prevProps.updated) {
+      if (this.props.isMaster === true) {
+        return this.getDormDeliv()
+          .then(() => {
+            console.log(this.state.deliveryList);
+            this.setState({ loaded: true });
+          });
+      }
+      return this.getRoomDeliv()
+        .then(() => {
+          this.setState({ loaded: true });
+        });
+    }
+    return null;
+  }
+
+  getRoomDeliv = () => fetch(`/api/student_delivery_recent/${this.state.userId}`)
+    .then((response) => response.json())
+    .then((responseData) => {
+      console.log(responseData.data);
+      this.setState({ deliveryList: responseData.data });
+    })
+    .catch((error) => {
+      console.log('Error fetching getRoomDeliv', error);
+    });
+
+  getDormDeliv = () => fetch(`/api/master_delivery/${this.state.userId}`)
+    .then((response) => response.json())
+    .then((responseData) => {
+      console.log(responseData.data);
+      this.setState({ deliveryList: responseData.data });
+    })
+    .catch((error) => {
+      console.log('Error fetching getRoomDeliv', error);
+    });
+
 
   changeState = (DelivID, StateNum) => {
     console.log(DelivID);
@@ -91,23 +109,21 @@ class DeliveryContainer extends Component {
     return updateState();
   }
 
-  deleteDeliv = (DelivID) => {
-    const delDeliv = () => fetch(`/api/delete/delivery/DelivID/${DelivID}`, {
-      method: 'post',
-      headers: { 'Content-Type': 'application/json' }
-    })
-      .then(() => fetch(`/api/master_delivery/${this.state.userId}`)
-        .then((response) => response.json())
-        .then((responseData) => {
-          console.log(responseData.data);
-          this.setState({ deliveryList: responseData.data });
-        })
-        .catch((error) => {
-          console.log('Error fetching getRoomDeliv', error);
-        }));
+  deleteDeliv = (DelivID) => fetch(`/api/delete/delivery/DelivID/${DelivID}`, {
+    method: 'post',
+    headers: { 'Content-Type': 'application/json' }
+  })
+    .then(() => fetch(`/api/master_delivery/${this.state.userId}`)
+      .then((response) => response.json())
+      .then((responseData) => {
+        console.log(responseData.data);
+        this.setState({ deliveryList: responseData.data });
+        this.props.onChangeUpdated();
+      })
+      .catch((error) => {
+        console.log('Error fetching getRoomDeliv', error);
+      }));
 
-    return delDeliv();
-  }
 
   openAddModal = () => {
     this.setState({ addModalVisible: true });
@@ -115,6 +131,7 @@ class DeliveryContainer extends Component {
 
   closeAddModal = () => {
     this.setState({ addModalVisible: false });
+    this.props.onChangeUpdated();
   }
 
   render() {
@@ -303,7 +320,13 @@ class DeliveryContainer extends Component {
 
 DeliveryContainer.propTypes = {
   isMaster: PropTypes.bool.isRequired,
-  // id: PropTypes.integer.isRequired,
+  updated: PropTypes.bool,
+  onChangeUpdated: PropTypes.func,
+};
+
+DeliveryContainer.defaultProps = {
+  updated: false,
+  onChangeUpdated: () => {},
 };
 
 export default DeliveryContainer;

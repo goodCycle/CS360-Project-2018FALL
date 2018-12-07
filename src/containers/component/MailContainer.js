@@ -22,6 +22,7 @@ class MailContainer extends Component {
     }
     return null;
   }
+
   componentDidMount() {
     if (this.props.isMaster === true) {
       return this.getDormMail()
@@ -38,6 +39,7 @@ class MailContainer extends Component {
 
   componentDidUpdate(prevProps) {
     if (this.props.updated !== prevProps.updated) {
+      console.log('mailcomponentDid updtae');
       if (this.props.isMaster === true) {
         return this.getDormMail()
           .then(() => {
@@ -53,29 +55,25 @@ class MailContainer extends Component {
     return null;
   }
 
-  getRoomMail() {
-    return fetch(`/api/student_mail_recent/${this.state.userId}`)
-      .then((response) => response.json())
-      .then((responseData) => {
-        console.log(responseData.data);
-        this.setState({ mailList: responseData.data });
-      })
-      .catch((error) => {
-        console.log('Error fetching getRoomMail', error);
-      });
-  }
+  getRoomMail = () => fetch(`/api/student_mail_recent/${this.state.userId}`)
+    .then((response) => response.json())
+    .then((responseData) => {
+      console.log(responseData.data);
+      this.setState({ mailList: responseData.data });
+    })
+    .catch((error) => {
+      console.log('Error fetching getRoomMail', error);
+    });
 
-  getDormMail() {
-    return fetch(`/api/master_mail/${this.state.userId}`)
-      .then((response) => response.json())
-      .then((responseData) => {
-        console.log(responseData.data);
-        this.setState({ mailList: responseData.data });
-      })
-      .catch((error) => {
-        console.log('Error fetching getRoomDeliv', error);
-      });
-  }
+  getDormMail = () => fetch(`/api/master_mail/${this.state.userId}`)
+    .then((response) => response.json())
+    .then((responseData) => {
+      console.log(responseData.data);
+      this.setState({ mailList: responseData.data });
+    })
+    .catch((error) => {
+      console.log('Error fetching getRoomDeliv', error);
+    });
 
   changeState = (MailID, StateNum) => {
     console.log(MailID);
@@ -98,23 +96,20 @@ class MailContainer extends Component {
     return updateState();
   }
 
-  deleteMail = (MailID) => {
-    const delMail = () => fetch(`/api/delete/mail/MailID/${MailID}`, {
-      method: 'post',
-      headers: { 'Content-Type': 'application/json' }
-    })
-      .then(() => fetch(`/api/master_mail/${this.state.userId}`)
-        .then((response) => response.json())
-        .then((responseData) => {
-          console.log(responseData.data);
-          this.setState({ deliveryList: responseData.data });
-        })
-        .catch((error) => {
-          console.log('Error fetching getRoomDeliv', error);
-        }));
-
-    return delMail();
-  }
+  deleteMail = (MailID) => fetch(`/api/delete/mail/MailID/${MailID}`, {
+    method: 'post',
+    headers: { 'Content-Type': 'application/json' }
+  })
+    .then(() => fetch(`/api/master_mail/${this.state.userId}`)
+      .then((response) => response.json())
+      .then((responseData) => {
+        console.log(responseData.data);
+        this.setState({ deliveryList: responseData.data });
+        this.props.onChangeUpdated();
+      })
+      .catch((error) => {
+        console.log('Error fetching getRoomDeliv', error);
+      }));
 
   openAddModal = () => {
     this.setState({ addModalVisible: true });

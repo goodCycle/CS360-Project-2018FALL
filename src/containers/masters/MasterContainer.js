@@ -52,7 +52,7 @@ class MasterContainer extends Component {
         </Navbar>
         {
           (selectedTab === '#delivery') // eslint-disable-line no-nested-ternary
-            ? <DeliveryContainer isMaster id={userId} />
+            ? <DeliveryContainer isMaster id={userId} updated={this.state.updated} onChangeUpdated={this.onChangeUpdated} />
             : (selectedTab === '#mail')
               ? <MailContainer isMaster id={userId} updated={this.state.updated} onChangeUpdated={this.onChangeUpdated} />
               : <MyPageContainer isMaster id={userId} />
