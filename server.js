@@ -355,7 +355,7 @@ app.post('/api/master', (req, res) => {
 app.post('/api/delivery', (req, res) => {
   console.log(req.body);
   const delivery = {
-    DelivID: req.body.DelivID,
+    DelivID: req.body.ID,
     DormID: req.body.DormID,
     RoomNum: req.body.RoomNum,
     Receiver: req.body.Receiver,
@@ -380,7 +380,7 @@ app.post('/api/delivery', (req, res) => {
 app.post('/api/mail', (req, res) => {
   console.log(req.body);
   const mail = {
-    MailID: req.body.MailID,
+    MailID: req.body.ID,
     DormID: req.body.DormID,
     RoomNum: req.body.RoomNum,
     Receiver: req.body.Receiver,

@@ -141,7 +141,7 @@ class DeliveryContainer extends Component {
             <AddDeliveryMailModal
               visible={this.state.addDeliveryModalVisible}
               onModalHide={this.closeAddDeliveryModal}
-              isDeliveryModal
+              isDelivery
             />
             <Table responsive style={{ marginBottom: 100, marginTop: 20 }}>
               <thead>
@@ -149,6 +149,7 @@ class DeliveryContainer extends Component {
                   <th>도착 시간</th>
                   <th>방 번호</th>
                   <th>택배 번호</th>
+                  <th>내용물</th>
                   <th>받는 이</th>
                   <th>보낸 이</th>
                   <th>택배 상태</th>
@@ -172,6 +173,9 @@ class DeliveryContainer extends Component {
                       </td>
                       <td>
                         {item.DelivID}
+                      </td>
+                      <td>
+                        {item.Content}
                       </td>
                       <td>
                         {item.Receiver}
