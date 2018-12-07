@@ -16,7 +16,6 @@ class MasterContainer extends Component {
 
   onSelect= (selectedKey) => {
     this.setState({ selectedTab: selectedKey });
-    console.log(selectedKey);
   }
 
   render() {
