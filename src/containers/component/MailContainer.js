@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Container, Jumbotron, Nav, Row, Col, Tab, Dropdown, Button, ButtonGroup, Table } from 'react-bootstrap';
+import AddDeliveryMailModal from '../component/AddDeliveryMailModal';
 
 class MailContainer extends Component {
   constructor(props) {
@@ -8,6 +9,7 @@ class MailContainer extends Component {
       userId: null,
       mailList: [],
       loaded: false,
+      addModalVisible: false,
     };
   }
   static getDerivedStateFromProps(prevProps, prevState) {
@@ -91,6 +93,14 @@ class MailContainer extends Component {
     return delMail();
   }
 
+  openAddModal = () => {
+    this.setState({ loaded: false, addModalVisible: true });
+  }
+
+  closeAddModal = () => {
+    this.setState({ loaded: true, addModalVisible: false });
+  }
+
   render() {
     const stateTitle = (mail) => {
       if (mail === 1) {
@@ -107,56 +117,67 @@ class MailContainer extends Component {
       return (
         (this.state.loaded === false)
           ? <Container>Loading</Container>
-          : <Table responsive style={{ marginBottom: 100, marginTop: 20 }}>
-            <thead>
-              <tr>
-                <th>도착 시간</th>
-                <th>방 번호</th>
-                <th>우편 번호</th>
-                <th>받는 이</th>
-                <th>보낸 이</th>
-                <th>우편 상태</th>
-                <th />
-              </tr>
-            </thead>
-            <tbody>
-              {
-                (this.state.mailList.map((item) => (
-                  <tr>
-                    <td>
-                      {
-                        item.ArrivalDate !== null &&
-                        <div>
-                          {item.ArrivalDate.split('T')[0]}
-                        </div>
-                      }
-                    </td>
-                    <td>
-                      {item.RoomNum}
-                    </td>
-                    <td>
-                      {item.MailID}
-                    </td>
-                    <td>
-                      {item.Receiver}
-                    </td>
-                    <td>
-                      {item.Sender}
-                    </td>
-                    <td>
-                      {stateTitle(item.State)}
-                    </td>
-                    <td>
-                      <Button
-                        variant="outline-secondary"
-                        onClick={this.deleteMail(item.MailID)}
-                      >DELETE</Button>
-                    </td>
-                  </tr>
-                )))
-              }
-            </tbody>
-          </Table>
+          : <Container>
+            <br />
+            <Button variant="danger" onClick={this.openAddModal}>
+              Add Mail
+            </Button>
+            <AddDeliveryMailModal
+              visible={this.state.addModalVisible}
+              onModalHide={this.closeAddModal}
+              isDelivery={false}
+            />
+            <Table responsive style={{ marginBottom: 100, marginTop: 20 }}>
+              <thead>
+                <tr>
+                  <th>도착 시간</th>
+                  <th>방 번호</th>
+                  <th>우편 번호</th>
+                  <th>받는 이</th>
+                  <th>보낸 이</th>
+                  <th>우편 상태</th>
+                  <th />
+                </tr>
+              </thead>
+              <tbody>
+                {
+                  (this.state.mailList.map((item) => (
+                    <tr>
+                      <td>
+                        {
+                          item.ArrivalDate !== null &&
+                          <div>
+                            {item.ArrivalDate.split('T')[0]}
+                          </div>
+                        }
+                      </td>
+                      <td>
+                        {item.RoomNum}
+                      </td>
+                      <td>
+                        {item.MailID}
+                      </td>
+                      <td>
+                        {item.Receiver}
+                      </td>
+                      <td>
+                        {item.Sender}
+                      </td>
+                      <td>
+                        {stateTitle(item.State)}
+                      </td>
+                      <td>
+                        <Button
+                          variant="outline-secondary"
+                          onClick={() => this.deleteMail(item.MailID)}
+                        >DELETE</Button>
+                      </td>
+                    </tr>
+                  )))
+                }
+              </tbody>
+            </Table>
+          </Container>
       );
     }
     return (

@@ -21,7 +21,7 @@ class DeliveryContainer extends Component {
       userId: null,
       deliveryList: [],
       loaded: false,
-      addDeliveryModalVisible: false,
+      addModalVisible: false,
     };
   }
 
@@ -109,12 +109,12 @@ class DeliveryContainer extends Component {
     return delDeliv();
   }
 
-  openAddDeliveryModal = () => {
-    this.setState({ addDeliveryModalVisible: true });
+  openAddModal = () => {
+    this.setState({ addModalVisible: true });
   }
 
-  closeAddDeliveryModal = () => {
-    this.setState({ addDeliveryModalVisible: false });
+  closeAddModal = () => {
+    this.setState({ addModalVisible: false });
   }
 
   render() {
@@ -135,12 +135,12 @@ class DeliveryContainer extends Component {
           ? <Container>Loading</Container>
           : <Container>
             <br />
-            <Button variant="danger" onClick={this.openAddDeliveryModal}>
+            <Button variant="danger" onClick={this.openAddModal}>
               Add Delivery
             </Button>
             <AddDeliveryMailModal
-              visible={this.state.addDeliveryModalVisible}
-              onModalHide={this.closeAddDeliveryModal}
+              visible={this.state.addModalVisible}
+              onModalHide={this.closeAddModal}
               isDelivery
             />
             <Table responsive style={{ marginBottom: 100, marginTop: 20 }}>
