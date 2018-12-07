@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import { Container, Jumbotron, Nav, Row, Col, Tab, Dropdown, Button, ButtonGroup } from 'react-bootstrap';
+import { Container, Jumbotron, Nav, Row, Col, Tab, Dropdown, Button, ButtonGroup, Table } from 'react-bootstrap';
+
 class MailContainer extends Component {
   constructor(props) {
     super(props);
@@ -29,6 +30,23 @@ class MailContainer extends Component {
         console.log('Error fetching getRoomMail', error);
       });
 
+    const getDormMail = () => fetch(`/api/master_mail/${this.state.userId}`)
+      .then((response) => response.json())
+      .then((responseData) => {
+        console.log(responseData.data);
+        this.setState({ mailList: responseData.data });
+      })
+      .catch((error) => {
+        console.log('Error fetching getRoomDeliv', error);
+      });
+
+    if (this.props.isMaster === true) {
+      return getDormMail()
+        .then(() => {
+          console.log(this.state.mailList);
+          this.setState({ loaded: true });
+        });
+    }
     return getRoomMail()
       .then(() => {
         this.setState({ loaded: true });
@@ -55,6 +73,24 @@ class MailContainer extends Component {
     return updateState();
   }
 
+  deleteMail(MailID) {
+    const delMail = () => fetch(`/api/delete/mail/MailID/${MailID}`, {
+      method: 'post',
+      headers: { 'Content-Type': 'application/json' }
+    })
+      .then(() => fetch(`/api/master_mail/${this.state.userId}`)
+        .then((response) => response.json())
+        .then((responseData) => {
+          console.log(responseData.data);
+          this.setState({ deliveryList: responseData.data });
+        })
+        .catch((error) => {
+          console.log('Error fetching getRoomDeliv', error);
+        }));
+
+    return delMail();
+  }
+
   render() {
     const stateTitle = (mail) => {
       if (mail === 1) {
@@ -67,6 +103,62 @@ class MailContainer extends Component {
       return '의문의 상태';
     };
 
+    if (this.props.isMaster === true) {
+      return (
+        (this.state.loaded === false)
+          ? <Container>Loading</Container>
+          : <Table responsive style={{ marginBottom: 100, marginTop: 20 }}>
+            <thead>
+              <tr>
+                <th>도착 시간</th>
+                <th>방 번호</th>
+                <th>우편 번호</th>
+                <th>받는 이</th>
+                <th>보낸 이</th>
+                <th>우편 상태</th>
+                <th />
+              </tr>
+            </thead>
+            <tbody>
+              {
+                (this.state.mailList.map((item) => (
+                  <tr>
+                    <td>
+                      {
+                        item.ArrivalDate !== null &&
+                        <div>
+                          {item.ArrivalDate.split('T')[0]}
+                        </div>
+                      }
+                    </td>
+                    <td>
+                      {item.RoomNum}
+                    </td>
+                    <td>
+                      {item.MailID}
+                    </td>
+                    <td>
+                      {item.Receiver}
+                    </td>
+                    <td>
+                      {item.Sender}
+                    </td>
+                    <td>
+                      {stateTitle(item.State)}
+                    </td>
+                    <td>
+                      <Button
+                        variant="outline-secondary"
+                        onClick={this.deleteMail.bind(this, item.MailID)}
+                      >DELETE</Button>
+                    </td>
+                  </tr>
+                )))
+              }
+            </tbody>
+          </Table>
+      );
+    }
     return (
       (this.state.loaded === false)
         ? <Container>Loading</Container>
@@ -167,7 +259,7 @@ class MailContainer extends Component {
 }
 
 MailContainer.propTypes = {
-  //isMaster: PropTypes.bool.isRequired,
+  // isMaster: PropTypes.bool.isRequired,
 };
 
 export default MailContainer;
