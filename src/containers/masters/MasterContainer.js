@@ -10,12 +10,20 @@ class MasterContainer extends Component {
     students: [],
     /* eslint-disable-next-line react/prop-types */
     userId: this.props.location.state.user.MastID,
+    updated: false,
   }
   componentDidMount() {
   }
 
-  onSelect= (selectedKey) => {
+  onSelect = (selectedKey) => {
     this.setState({ selectedTab: selectedKey });
+  }
+
+  onChangeUpdated = () => {
+    if (this.state.updated) {
+      this.setState({ updated: false });
+    }
+    this.setState({ updated: true });
   }
 
   render() {
@@ -46,7 +54,7 @@ class MasterContainer extends Component {
           (selectedTab === '#delivery') // eslint-disable-line no-nested-ternary
             ? <DeliveryContainer isMaster id={userId} />
             : (selectedTab === '#mail')
-              ? <MailContainer isMaster id={userId} />
+              ? <MailContainer isMaster id={userId} updated={this.state.updated} onChangeUpdated={this.onChangeUpdated} />
               : <MyPageContainer isMaster id={userId} />
         }
       </Container>

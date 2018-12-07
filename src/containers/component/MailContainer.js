@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import { Container, Jumbotron, Nav, Row, Col, Tab, Dropdown, Button, ButtonGroup, Table } from 'react-bootstrap';
 import AddDeliveryMailModal from '../component/AddDeliveryMailModal';
 
@@ -22,7 +23,38 @@ class MailContainer extends Component {
     return null;
   }
   componentDidMount() {
-    const getRoomMail = () => fetch(`/api/student_mail_recent/${this.state.userId}`)
+    if (this.props.isMaster === true) {
+      return this.getDormMail()
+        .then(() => {
+          console.log(this.state.mailList);
+          this.setState({ loaded: true });
+        });
+    }
+    return this.getRoomMail()
+      .then(() => {
+        this.setState({ loaded: true });
+      });
+  }
+
+  componentDidUpdate(prevProps) {
+    if (this.props.updated !== prevProps.updated) {
+      if (this.props.isMaster === true) {
+        return this.getDormMail()
+          .then(() => {
+            console.log(this.state.mailList);
+            this.setState({ loaded: true });
+          });
+      }
+      return this.getRoomMail()
+        .then(() => {
+          this.setState({ loaded: true });
+        });
+    }
+    return null;
+  }
+
+  getRoomMail() {
+    return fetch(`/api/student_mail_recent/${this.state.userId}`)
       .then((response) => response.json())
       .then((responseData) => {
         console.log(responseData.data);
@@ -31,8 +63,10 @@ class MailContainer extends Component {
       .catch((error) => {
         console.log('Error fetching getRoomMail', error);
       });
+  }
 
-    const getDormMail = () => fetch(`/api/master_mail/${this.state.userId}`)
+  getDormMail() {
+    return fetch(`/api/master_mail/${this.state.userId}`)
       .then((response) => response.json())
       .then((responseData) => {
         console.log(responseData.data);
@@ -41,20 +75,9 @@ class MailContainer extends Component {
       .catch((error) => {
         console.log('Error fetching getRoomDeliv', error);
       });
-
-    if (this.props.isMaster === true) {
-      return getDormMail()
-        .then(() => {
-          console.log(this.state.mailList);
-          this.setState({ loaded: true });
-        });
-    }
-    return getRoomMail()
-      .then(() => {
-        this.setState({ loaded: true });
-      });
   }
-  changeState(MailID, StateNum) {
+
+  changeState = (MailID, StateNum) => {
     console.log(MailID);
     const updateState = () => fetch(`/api/mail_state/${MailID}`, {
       method: 'post',
@@ -94,11 +117,12 @@ class MailContainer extends Component {
   }
 
   openAddModal = () => {
-    this.setState({ loaded: false, addModalVisible: true });
+    this.setState({ addModalVisible: true });
   }
 
   closeAddModal = () => {
-    this.setState({ loaded: true, addModalVisible: false });
+    this.setState({ addModalVisible: false });
+    this.props.onChangeUpdated();
   }
 
   render() {
@@ -256,13 +280,13 @@ class MailContainer extends Component {
                           </Button>
                           <Dropdown.Toggle split variant="info" id="dropdown-split-basic" />
                           <Dropdown.Menu>
-                            <Dropdown.Item onClick={this.changeState.bind(this, item.MailID, 1)}>
+                            <Dropdown.Item onClick={() => this.changeState(item.MailID, 1)}>
                               미수령
                             </Dropdown.Item>
-                            <Dropdown.Item onClick={this.changeState.bind(this, item.MailID, 2)}>
+                            <Dropdown.Item onClick={() => this.changeState(item.MailID, 2)}>
                               수령 완료
                             </Dropdown.Item>
-                            <Dropdown.Item onClick={this.changeState.bind(this, item.MailID, 3)}>
+                            <Dropdown.Item onClick={() => this.changeState(item.MailID, 3)}>
                               반송 신청
                             </Dropdown.Item>
                           </Dropdown.Menu>
@@ -280,7 +304,14 @@ class MailContainer extends Component {
 }
 
 MailContainer.propTypes = {
-  // isMaster: PropTypes.bool.isRequired,
+  isMaster: PropTypes.bool.isRequired,
+  updated: PropTypes.bool,
+  onChangeUpdated: PropTypes.func,
+};
+
+MailContainer.defaultProps = {
+  updated: false,
+  onChangeUpdated: () => {},
 };
 
 export default MailContainer;
