@@ -1,6 +1,18 @@
 import React, { Component } from 'react';
-import { Container, Jumbotron, Nav, Row, Col, Tab, Dropdown, Button, ButtonGroup, Table } from 'react-bootstrap';
+import {
+  Container,
+  Jumbotron,
+  Nav,
+  Row,
+  Col,
+  Tab,
+  Dropdown,
+  Button,
+  ButtonGroup,
+  Table,
+} from 'react-bootstrap';
 import PropTypes from 'prop-types';
+import AddDeliveryMailModal from '../component/AddDeliveryMailModal';
 
 class DeliveryContainer extends Component {
   constructor(props) {
@@ -9,6 +21,7 @@ class DeliveryContainer extends Component {
       userId: null,
       deliveryList: [],
       loaded: false,
+      addDeliveryModalVisible: false,
     };
   }
 
@@ -96,6 +109,14 @@ class DeliveryContainer extends Component {
     return delDeliv();
   }
 
+  openAddDeliveryModal = () => {
+    this.setState({ addDeliveryModalVisible: true });
+  }
+
+  closeAddDeliveryModal = () => {
+    this.setState({ addDeliveryModalVisible: false });
+  }
+
   render() {
     const stateTitle = (deliv) => {
       if (deliv === 1) {
@@ -112,56 +133,67 @@ class DeliveryContainer extends Component {
       return (
         (this.state.loaded === false)
           ? <Container>Loading</Container>
-          : <Table responsive style={{ marginBottom: 100, marginTop: 20 }}>
-            <thead>
-              <tr>
-                <th>도착 시간</th>
-                <th>방 번호</th>
-                <th>택배 번호</th>
-                <th>받는 이</th>
-                <th>보낸 이</th>
-                <th>택배 상태</th>
-                <th />
-              </tr>
-            </thead>
-            <tbody>
-              {
-                (this.state.deliveryList.map((item) => (
-                  <tr>
-                    <td>
-                      {
-                        item.ArrivalDate !== null &&
-                        <div>
-                          {item.ArrivalDate.split('T')[0]}
-                        </div>
-                      }
-                    </td>
-                    <td>
-                      {item.RoomNum}
-                    </td>
-                    <td>
-                      {item.DelivID}
-                    </td>
-                    <td>
-                      {item.Receiver}
-                    </td>
-                    <td>
-                      {item.Sender}
-                    </td>
-                    <td>
-                      {stateTitle(item.State)}
-                    </td>
-                    <td>
-                      <Button
-                        variant="outline-secondary"
-                        onClick={this.deleteDeliv(item.DelivID)}
-                      >DELETE</Button>
-                    </td>
-                  </tr>
-                )))
-              }
-            </tbody>
-          </Table>
+          : <Container>
+            <br />
+            <Button variant="danger" onClick={this.openAddDeliveryModal}>
+              Add Delivery
+            </Button>
+            <AddDeliveryMailModal
+              visible={this.state.addDeliveryModalVisible}
+              onModalHide={this.closeAddDeliveryModal}
+              isDeliveryModal
+            />
+            <Table responsive style={{ marginBottom: 100, marginTop: 20 }}>
+              <thead>
+                <tr>
+                  <th>도착 시간</th>
+                  <th>방 번호</th>
+                  <th>택배 번호</th>
+                  <th>받는 이</th>
+                  <th>보낸 이</th>
+                  <th>택배 상태</th>
+                  <th />
+                </tr>
+              </thead>
+              <tbody>
+                {
+                  (this.state.deliveryList.map((item) => (
+                    <tr>
+                      <td>
+                        {
+                          item.ArrivalDate !== null &&
+                          <div>
+                            {item.ArrivalDate.split('T')[0]}
+                          </div>
+                        }
+                      </td>
+                      <td>
+                        {item.RoomNum}
+                      </td>
+                      <td>
+                        {item.DelivID}
+                      </td>
+                      <td>
+                        {item.Receiver}
+                      </td>
+                      <td>
+                        {item.Sender}
+                      </td>
+                      <td>
+                        {stateTitle(item.State)}
+                      </td>
+                      <td>
+                        <Button
+                          variant="outline-secondary"
+                          onClick={() => this.deleteDeliv(item.DelivID)}
+                        >DELETE</Button>
+                      </td>
+                    </tr>
+                  )))
+                }
+              </tbody>
+            </Table>
+          </Container>
       );
     }
     return (
