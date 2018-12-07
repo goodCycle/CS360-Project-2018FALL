@@ -72,8 +72,8 @@ BEGIN
 END$$
 DELIMITER ;
 
-#tuple insertion	
-#Dormitory tuples
+/* Tuple insertion */
+/* Dormitory tuples */
 INSERT INTO DORMITORY(DormID, BuildingNum, BuildingName) VALUES(1, 'E8', '세종관');
 INSERT INTO DORMITORY(DormID, BuildingNum, BuildingName) VALUES(2, 'W3', '갈릴레이관');
 INSERT INTO DORMITORY(DormID, BuildingNum, BuildingName) VALUES(3, 'W4-1', '여울관');
@@ -98,15 +98,15 @@ INSERT INTO DORMITORY(DormID, BuildingNum, BuildingName) VALUES(21, 'N20', '신�
 INSERT INTO DORMITORY(DormID, BuildingNum, BuildingName) VALUES(22, 'N21', '지혜관');
 INSERT INTO DORMITORY(DormID, BuildingNum, BuildingName) VALUES(23, 'N27', '유레카관');
 
-#Delivery tuples
+/* Delivery tuples */
 INSERT INTO DELIVERY(DelivID, DormID, RoomNum, Receiver, Sender, Content, Location, State, ArrivalDate, ReceiptDate)
 VALUES(151515, 22, 322, '윤형준', '이찬욱', '문구류', '대전광역시 유성구 구성동 한국과학기술원 지혜관 322호', 1, NOW(), NULL);
 
-#Mail tuples
+/* Mail tuples */
 INSERT INTO MAIL(MailID, DormID, RoomNum, Receiver, Sender, Location, State, ArrivalDate, ReceiptDate)
 VALUES(3030, 22, 322, '윤형준', '이찬욱', '대전광역시 유성구 구성동 한국과학기술원 지혜관 322호', 1, NOW(), NULL);
 
-#Student tuples
+/* Student tuples */
 INSERT INTO STUDENT(StuID, DormID, RoomNum, StuName, PhoneNum, Password) 
 VALUES(20140645, 20, 104, '홍재이', 01099984612, 'abcd1234');
 INSERT INTO STUDENT(StuID, DormID, RoomNum, StuName, PhoneNum, Password) 
@@ -114,7 +114,7 @@ VALUES(20140461, 22, 322, '이찬욱', 01091043774,'12345678');
 INSERT INTO STUDENT(StuID, DormID, RoomNum, StuName, PhoneNum, Password)
 VALUES(20150527, 18, 203, '윤형준', 01041459119,'efgd1234');
 
-#Master tuples
+/* Master tuples */
 INSERT INTO MASTER(MastID, DormID, MastName, PhoneNum, Password) 
 VALUES(20092003, 20, '송혜교', 01037361129, '11112222');
 INSERT INTO MASTER(MastID, DormID, MastName, PhoneNum, Password) 
