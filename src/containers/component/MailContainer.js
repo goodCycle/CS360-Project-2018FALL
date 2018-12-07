@@ -73,7 +73,7 @@ class MailContainer extends Component {
     return updateState();
   }
 
-  deleteMail(MailID) {
+  deleteMail = (MailID) => {
     const delMail = () => fetch(`/api/delete/mail/MailID/${MailID}`, {
       method: 'post',
       headers: { 'Content-Type': 'application/json' }
@@ -149,7 +149,7 @@ class MailContainer extends Component {
                     <td>
                       <Button
                         variant="outline-secondary"
-                        onClick={this.deleteMail.bind(this, item.MailID)}
+                        onClick={this.deleteMail(item.MailID)}
                       >DELETE</Button>
                     </td>
                   </tr>

@@ -4,12 +4,11 @@ import {
   Modal,
   Button,
   Form,
+  Row,
+  Col,
 } from 'react-bootstrap';
 import PropTypes from 'prop-types';
 
-const submitButtonStyle = {
-  marginTop: 15,
-};
 
 class AddDeliveryMailModal extends Component {
   constructor() {
@@ -64,7 +63,6 @@ class AddDeliveryMailModal extends Component {
     const form = event.currentTarget;
     const deliveryOrMail = this.props.isDelivery ? 'delivery' : 'mail';
 
-    console.log('check state before submit', this.state.postNum, this.state.receiver, this.state.RoomNum);
     if (form.checkValidity()) {
       this.getDormIdFromDormName(this.state.dormName)
         .then((dormId) => {
@@ -86,6 +84,7 @@ class AddDeliveryMailModal extends Component {
               this.setState(this.getInitialState());
               // this.setState({ id: '' });
               // this.setState({ showModal: true });
+              this.props.onModalHide();
             });
         })
         .catch((error) => {
@@ -113,9 +112,15 @@ class AddDeliveryMailModal extends Component {
       });
   }
 
+  closeModal = () => {
+    this.setState(this.getInitialState());
+    // this.setState({ validated: true });
+    this.props.onModalHide();
+  }
+
   render() {
     return (
-      <Modal show={this.props.visible} onHide={this.props.onModalHide} >
+      <Modal show={this.props.visible} onHide={this.closeModal} >
         <Modal.Header closeButton>
           <Modal.Title>
             { this.props.isDelivery
@@ -204,19 +209,20 @@ class AddDeliveryMailModal extends Component {
                 Please enter the whole location of the { this.props.isDelivery ? 'delivery' : 'mail' }
               </Form.Control.Feedback>
             </Form.Group>
-            <Button style={submitButtonStyle} variant="primary" type="submit">
-              Submit
-            </Button>
+            <Row>
+              <Col md={1}>
+                <Button variant="primary" type="submit">
+                  Save Changes
+                </Button>
+              </Col>
+              <Col md={{ span: 3, offset: 8 }}>
+                <Button variant="secondary" onClick={this.closeModal}>
+                  Close
+                </Button>
+              </Col>
+            </Row>
           </Form>
         </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={this.props.onModalHide}>
-            Close
-          </Button>
-          <Button variant="primary" onClick={this.props.onModalHide}>
-            Save Changes
-          </Button>
-        </Modal.Footer>
       </Modal>
     );
   }

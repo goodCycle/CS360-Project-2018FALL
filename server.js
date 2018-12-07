@@ -369,7 +369,7 @@ app.post('/api/delivery', (req, res) => {
   const query = connection.query('INSERT INTO DELIVERY SET ?', delivery,
     (err, /* result */) => {
       if (err) {
-        console.error(err);
+        console.error('post api/delivery err');
         throw err;
       }
       console.log(query);
