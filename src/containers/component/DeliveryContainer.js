@@ -193,13 +193,13 @@ class DeliveryContainer extends Component {
   render() {
     const stateTitle = (deliv) => {
       if (deliv === 1) {
-        return '미수령';
+        return 'Pending';
       } else if (deliv === 2) {
-        return '수령 완료';
+        return 'Receving Completed';
       } else if (deliv === 3) {
-        return '반송 신청';
+        return 'Return Request';
       }
-      return '의문의 상태';
+      return 'Unknown';
     };
 
     if (this.props.isMaster === true) {
@@ -229,13 +229,13 @@ class DeliveryContainer extends Component {
             <Table responsive style={{ marginBottom: 100, marginTop: 20 }}>
               <thead>
                 <tr>
-                  <th>도착 시간</th>
-                  <th>방 번호</th>
-                  <th>택배 번호</th>
-                  <th>내용물</th>
-                  <th>받는 이</th>
-                  <th>보낸 이</th>
-                  <th>택배 상태</th>
+                  <th>Arrived Date</th>
+                  <th>Room Number</th>
+                  <th>Post Number</th>
+                  <th>Content</th>
+                  <th>Receiver</th>
+                  <th>Sender</th>
+                  <th>Delivery State</th>
                   <th />
                 </tr>
               </thead>
@@ -294,7 +294,7 @@ class DeliveryContainer extends Component {
                 <Nav variant="pills" className="flex-column" style={{ backgroundColor: '#F6F6F9', borderRadius: '5px' }}>
                   <Nav.Item style={{ color: 'white' }}>
                     <Nav.Link eventKey="default">
-                      받는 이 / 배송 날짜
+                      Receiver / Delivery Date
                     </Nav.Link>
                   </Nav.Item>
                   {
@@ -320,26 +320,26 @@ class DeliveryContainer extends Component {
                     <Jumbotron>
                       <h1>Find Your Taekbae!</h1>
                       <p>
-                        당신의 방으로 온 택배를 확인할 수 있습니다.<br />
-                        택배를 수령한 후에는 상태를 변경하여 주세요!
+                        You can check the delivery arrived to your room.<br />
+                        Please change the state after you received your delivery.
                       </p>
                     </Jumbotron>
                   </Tab.Pane>
                   {this.state.deliveryList.map((item) => (
                     <Tab.Pane eventKey={item.DelivID}>
                       <Jumbotron>
-                        <h6 style={{ fontWeight: 'bold' }}>운송장번호</h6>
+                        <h6 style={{ fontWeight: 'bold' }}>Post Number</h6>
                         <p>{item.DelivID}</p>
-                        <h6 style={{ fontWeight: 'bold' }}>보낸 이</h6>
+                        <h6 style={{ fontWeight: 'bold' }}>Sender</h6>
                         <p>{item.Sender}</p>
-                        <h6 style={{ fontWeight: 'bold' }}>받는 이</h6>
+                        <h6 style={{ fontWeight: 'bold' }}>Receiver</h6>
                         <p>{item.Receiver}</p>
-                        <h6 style={{ fontWeight: 'bold' }}>내용물</h6>
+                        <h6 style={{ fontWeight: 'bold' }}>Content</h6>
                         <p>{item.Content}</p>
                         {
                           item.ArrivalDate !== null &&
                           <div>
-                            <h6 style={{ fontWeight: 'bold' }}>도착 시간</h6>
+                            <h6 style={{ fontWeight: 'bold' }}>Arrival Date and Time</h6>
                             <p>{item.ArrivalDate.split('T')[0]}<br />
                               {item.ArrivalDate.split('T')[1].split('.')[0]}</p>
                           </div>
@@ -347,7 +347,7 @@ class DeliveryContainer extends Component {
                         {
                           (this.state.loaded && item.State === 2 && (this.state.delivIdToReceiptDate[item.DelivID] !== undefined))
                             ? <div>
-                              <h6 style={{ fontWeight: 'bold' }}>수령 시간</h6>
+                              <h6 style={{ fontWeight: 'bold' }}>Received Date and Time</h6>
                               {
                                 <p>{this.state.delivIdToReceiptDate[item.DelivID].split('T')[0]}{<br />}
                                   {this.state.delivIdToReceiptDate[item.DelivID].split('T')[1].split('.')[0]}</p>
@@ -355,7 +355,7 @@ class DeliveryContainer extends Component {
                             </div>
                             : null
                         }
-                        <h6 style={{ fontWeight: 'bold' }}>배송 상태</h6>
+                        <h6 style={{ fontWeight: 'bold' }}>Delivery State</h6>
                         <Dropdown as={ButtonGroup}>
                           <Button variant="info">
                             {stateTitle(item.State)}
@@ -363,13 +363,13 @@ class DeliveryContainer extends Component {
                           <Dropdown.Toggle split variant="info" id="dropdown-split-basic" />
                           <Dropdown.Menu>
                             <Dropdown.Item onClick={() => this.changeState(item.DelivID, 1)}>
-                              미수령
+                              Pending
                             </Dropdown.Item>
                             <Dropdown.Item onClick={() => this.changeState(item.DelivID, 2)}>
-                              수령 완료
+                              Receiving Completed
                             </Dropdown.Item>
                             <Dropdown.Item onClick={() => this.changeState(item.DelivID, 3)}>
-                              반송 신청
+                              Return Request
                             </Dropdown.Item>
                           </Dropdown.Menu>
                         </Dropdown>

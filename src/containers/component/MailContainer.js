@@ -179,13 +179,13 @@ class MailContainer extends Component {
   render() {
     const stateTitle = (mail) => {
       if (mail === 1) {
-        return '미수령';
+        return 'Pending';
       } else if (mail === 2) {
-        return '수령 완료';
+        return 'Receiving Completed';
       } else if (mail === 3) {
-        return '반송 신청';
+        return 'Return Request';
       }
-      return '의문의 상태';
+      return 'Unknown';
     };
 
     if (this.props.isMaster === true) {
@@ -215,12 +215,12 @@ class MailContainer extends Component {
             <Table responsive style={{ marginBottom: 100, marginTop: 20 }}>
               <thead>
                 <tr>
-                  <th>도착 시간</th>
-                  <th>방 번호</th>
-                  <th>우편 번호</th>
-                  <th>받는 이</th>
-                  <th>보낸 이</th>
-                  <th>우편 상태</th>
+                  <th>Arrived Date</th>
+                  <th>Room Number</th>
+                  <th>Post Number</th>
+                  <th>Receiver</th>
+                  <th>Sender</th>
+                  <th>Delivery State</th>
                   <th />
                 </tr>
               </thead>
@@ -276,7 +276,7 @@ class MailContainer extends Component {
                 <Nav variant="pills" className="flex-column" style={{ backgroundColor: '#F6F6F9', borderRadius: '5px' }}>
                   <Nav.Item style={{ color: 'white' }}>
                     <Nav.Link eventKey="default">
-                      받는 이 / 배송 날짜
+                      Receiver / Delivery Date
                     </Nav.Link>
                   </Nav.Item>
                   {
@@ -302,24 +302,24 @@ class MailContainer extends Component {
                     <Jumbotron>
                       <h1>Find Your Taekbae!</h1>
                       <p>
-                        당신의 방으로 온 우편을 확인할 수 있습니다.<br />
-                        우편를 수령한 후에는 상태를 변경하여 주세요!
+                        You can check the mail arrived to your room.<br />
+                        Please change the state after you received your mail.
                       </p>
                     </Jumbotron>
                   </Tab.Pane>
                   {this.state.mailList.map((item) => (
                     <Tab.Pane eventKey={item.MailID}>
                       <Jumbotron>
-                        <h6 style={{ fontWeight: 'bold' }}>운송장번호</h6>
+                        <h6 style={{ fontWeight: 'bold' }}>Post Number</h6>
                         <p>{item.MailID}</p>
-                        <h6 style={{ fontWeight: 'bold' }}>보낸 이</h6>
+                        <h6 style={{ fontWeight: 'bold' }}>Sender</h6>
                         <p>{item.Sender}</p>
-                        <h6 style={{ fontWeight: 'bold' }}>받는 이</h6>
+                        <h6 style={{ fontWeight: 'bold' }}>Receiver</h6>
                         <p>{item.Receiver}</p>
                         {
                           item.ArrivalDate !== null &&
                           <div>
-                            <h6 style={{ fontWeight: 'bold' }}>도착 시간</h6>
+                            <h6 style={{ fontWeight: 'bold' }}>Arrival Date and Time</h6>
                             <p>{item.ArrivalDate.split('T')[0]}<br />
                               {item.ArrivalDate.split('T')[1].split('.')[0]}</p>
                           </div>
@@ -327,7 +327,7 @@ class MailContainer extends Component {
                         {
                           (this.state.loaded && item.State === 2 && (this.state.mailIdToReceiptDate[item.MailID] !== undefined))
                             ? <div>
-                              <h6 style={{ fontWeight: 'bold' }}>수령 시간</h6>
+                              <h6 style={{ fontWeight: 'bold' }}>Received Date and Time</h6>
                               {
                                 <p>{this.state.mailIdToReceiptDate[item.MailID].split('T')[0]}{<br />}
                                   {this.state.mailIdToReceiptDate[item.MailID].split('T')[1].split('.')[0]}</p>
@@ -335,7 +335,7 @@ class MailContainer extends Component {
                             </div>
                             : null
                         }
-                        <h6 style={{ fontWeight: 'bold' }}>배송 상태</h6>
+                        <h6 style={{ fontWeight: 'bold' }}>Delivery State</h6>
                         <Dropdown as={ButtonGroup}>
                           <Button variant="info">
                             {stateTitle(item.State)}
@@ -343,13 +343,13 @@ class MailContainer extends Component {
                           <Dropdown.Toggle split variant="info" id="dropdown-split-basic" />
                           <Dropdown.Menu>
                             <Dropdown.Item onClick={() => this.changeState(item.MailID, 1)}>
-                              미수령
+                              Pending
                             </Dropdown.Item>
                             <Dropdown.Item onClick={() => this.changeState(item.MailID, 2)}>
-                              수령 완료
+                              Receiving Completed
                             </Dropdown.Item>
                             <Dropdown.Item onClick={() => this.changeState(item.MailID, 3)}>
-                              반송 신청
+                              Return Request
                             </Dropdown.Item>
                           </Dropdown.Menu>
                         </Dropdown>
