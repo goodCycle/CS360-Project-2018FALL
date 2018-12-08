@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import { Container, Navbar, Nav } from 'react-bootstrap';
 import DeliveryContainer from '../component/DeliveryContainer';
 import MailContainer from '../component/MailContainer';
-import MyPageContainer from '../component/MyPageContainer';
 
 class MasterContainer extends Component {
   state = {
@@ -19,6 +19,10 @@ class MasterContainer extends Component {
 
   onSelect = (selectedKey) => {
     this.setState({ selectedTab: selectedKey });
+  }
+
+  onClickLogout = () => {
+    this.props.history.push({ pathname: '/' });
   }
 
   onChangeUpdated = () => {
@@ -46,9 +50,9 @@ class MasterContainer extends Component {
             </Nav>
             <Nav
               activeKey={this.state.selectedTab}
-              onSelect={this.onSelect}
+              onSelect={this.onClickLogout}
             >
-              <Nav.Link href="#mypage">My Page</Nav.Link>
+              <Nav.Link href="#logout">Logout</Nav.Link>
             </Nav>
           </Navbar.Collapse>
         </Navbar>
@@ -61,20 +65,24 @@ class MasterContainer extends Component {
               updated={this.state.updated}
               onChangeUpdated={this.onChangeUpdated}
             />
-            : (selectedTab === '#mail')
-              ? <MailContainer
-                isMaster
-                id={userId}
-                dormId={userDormId}
-                updated={this.state.updated}
-                onChangeUpdated={this.onChangeUpdated}
-              />
-              : <MyPageContainer isMaster id={userId} />
+            : <MailContainer
+              isMaster
+              id={userId}
+              dormId={userDormId}
+              updated={this.state.updated}
+              onChangeUpdated={this.onChangeUpdated}
+            />
         }
       </Container>
 
     );
   }
 }
+
+MasterContainer.propTypes = {
+  history: PropTypes.shape({
+    push: PropTypes.func.isRequired,
+  }).isRequired,
+};
 
 export default MasterContainer;
