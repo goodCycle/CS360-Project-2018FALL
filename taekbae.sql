@@ -1,6 +1,6 @@
 CREATE USER IF NOT EXISTS 'cupid'@'localhost' IDENTIFIED BY '1234';
-GRANT ALL PRIVILEGES ON taekbae.* TO 'cupid'@'localhost';
 CREATE DATABASE IF NOT EXISTS taekbae;
+GRANT ALL PRIVILEGES ON taekbae.* TO 'cupid'@'localhost';
 USE taekbae;
 
 CREATE TABLE DORMITORY (
