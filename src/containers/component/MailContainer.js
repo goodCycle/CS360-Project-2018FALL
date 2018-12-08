@@ -246,8 +246,6 @@ class MailContainer extends Component {
                       <Jumbotron>
                         <h6 style={{ fontWeight: 'bold' }}>운송장번호</h6>
                         <p>{item.MailID}</p>
-                        <h6 style={{ fontWeight: 'bold' }}>배송지</h6>
-                        <p>{item.Location}</p>
                         <h6 style={{ fontWeight: 'bold' }}>보낸 이</h6>
                         <p>{item.Sender}</p>
                         <h6 style={{ fontWeight: 'bold' }}>받는 이</h6>

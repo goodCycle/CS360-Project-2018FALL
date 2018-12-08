@@ -22,6 +22,7 @@ class DeliveryContainer extends Component {
       deliveryList: [],
       loaded: false,
       addModalVisible: false,
+      delivIdToReceiptDate: {},
     };
   }
 
@@ -40,13 +41,26 @@ class DeliveryContainer extends Component {
       return this.getDormDeliv()
         .then(() => {
           console.log(this.state.deliveryList);
-          this.setState({ loaded: true });
-        });
+          // this.setState({ loaded: true });
+        })
+        .then(() => {
+          this.state.deliveryList.map((item) => {
+            if (item.State === 2) {
+              this.getReceiptDate(item.DelivID);
+            }
+          });
+        })
+        .then(() => this.setState({ loaded: true }));
     }
     return this.getRoomDeliv()
       .then(() => {
-        this.setState({ loaded: true });
-      });
+        this.state.deliveryList.map((item) => {
+          if (item.State === 2) {
+            this.getReceiptDate(item.DelivID);
+          }
+        });
+      })
+      .then(() => this.setState({ loaded: true }));
   }
 
   componentDidUpdate(prevProps) {
@@ -86,9 +100,25 @@ class DeliveryContainer extends Component {
       console.log('Error fetching getRoomDeliv', error);
     });
 
+  getReceiptDate = (delivId) => fetch(`/api/receiptdelivdate/${delivId}`)
+    .then((response) => response.json())
+    .then((responseData) => {
+      console.log(responseData.data);
+      // const delivIdToRD = {};
+      // delivIdToRD[delivId] = responseData.data;
+      this.setState({
+        delivIdToReceiptDate: {
+          ...this.state.delivIdToReceiptDate,
+          [delivId]: responseData.data[0].ReceiptDate,
+        }
+      });
+    })
+    .catch((error) => {
+      console.log('Error fetching getReceiptDate', error);
+    });
 
   changeState = (DelivID, StateNum) => {
-    console.log(DelivID);
+    this.setState({ loaded: false });
     const updateState = () => fetch(`/api/delivery_state/${DelivID}`, {
       method: 'post',
       headers: { 'Content-Type': 'application/json' },
@@ -96,15 +126,29 @@ class DeliveryContainer extends Component {
         State: StateNum
       })
     })
-      .then(() => fetch(`/api/student_delivery_recent/${this.state.userId}`)
-        .then((response) => response.json())
-        .then((responseData) => {
-          console.log(responseData.data);
-          this.setState({ deliveryList: responseData.data });
-        })
-        .catch((error) => {
-          console.log('Error fetching getRoomDeliv', error);
-        }));
+      .then(() => fetch(`/api/student_delivery_recent/${this.state.userId}`))
+      .then((response) => response.json())
+      .then((responseData) => {
+        console.log(responseData.data);
+        this.setState({ deliveryList: responseData.data });
+      })
+      .then(() => fetch(`/api/receiptdelivdate/${DelivID}`))
+      .then((response) => response.json())
+      .then((responseData) => {
+        console.log(responseData.data);
+        // const delivIdToRD = {};
+        // delivIdToRD[delivId] = responseData.data;
+        this.setState({
+          delivIdToReceiptDate: {
+            ...this.state.delivIdToReceiptDate,
+            [DelivID]: responseData.data[0].ReceiptDate,
+          },
+          loaded: true,
+        });
+      })
+      .catch((error) => {
+        console.log('Error fetching getRoomDeliv', error);
+      });
 
     return updateState();
   }
@@ -145,6 +189,8 @@ class DeliveryContainer extends Component {
       }
       return '의문의 상태';
     };
+
+    console.log('delivIdToReceiptDate', this.state.delivIdToReceiptDate);
 
     if (this.props.isMaster === true) {
       return (
@@ -264,8 +310,6 @@ class DeliveryContainer extends Component {
                       <Jumbotron>
                         <h6 style={{ fontWeight: 'bold' }}>운송장번호</h6>
                         <p>{item.DelivID}</p>
-                        <h6 style={{ fontWeight: 'bold' }}>배송지</h6>
-                        <p>{item.Location}</p>
                         <h6 style={{ fontWeight: 'bold' }}>보낸 이</h6>
                         <p>{item.Sender}</p>
                         <h6 style={{ fontWeight: 'bold' }}>받는 이</h6>
@@ -281,12 +325,15 @@ class DeliveryContainer extends Component {
                           </div>
                         }
                         {
-                          item.ReceiptDate !== null &&
-                            <div>
+                          (this.state.loaded && item.State === 2 && (this.state.delivIdToReceiptDate[item.DelivID] !== undefined))
+                            ? <div>
                               <h6 style={{ fontWeight: 'bold' }}>수령 시간</h6>
-                              <p>{item.ReceiptDate.split('T')[0]}<br />
-                                {item.ReceiptDate.split('T')[1].split('.')[0]}</p>
+                              {
+                                <p>{this.state.delivIdToReceiptDate[item.DelivID].split('T')[0]}{<br />}
+                                  {this.state.delivIdToReceiptDate[item.DelivID].split('T')[1].split('.')[0]}</p>
+                              }
                             </div>
+                            : null
                         }
                         <h6 style={{ fontWeight: 'bold' }}>배송 상태</h6>
                         <Dropdown as={ButtonGroup}>
@@ -295,13 +342,13 @@ class DeliveryContainer extends Component {
                           </Button>
                           <Dropdown.Toggle split variant="info" id="dropdown-split-basic" />
                           <Dropdown.Menu>
-                            <Dropdown.Item onClick={this.changeState(item.DelivID, 1)}>
+                            <Dropdown.Item onClick={() => this.changeState(item.DelivID, 1)}>
                               미수령
                             </Dropdown.Item>
-                            <Dropdown.Item onClick={this.changeState(item.DelivID, 2)}>
+                            <Dropdown.Item onClick={() => this.changeState(item.DelivID, 2)}>
                               수령 완료
                             </Dropdown.Item>
-                            <Dropdown.Item onClick={this.changeState(item.DelivID, 3)}>
+                            <Dropdown.Item onClick={() => this.changeState(item.DelivID, 3)}>
                               반송 신청
                             </Dropdown.Item>
                           </Dropdown.Menu>

@@ -23,7 +23,6 @@ class AddDeliveryMailModal extends Component {
       receiver: null,
       sender: null,
       content: null,
-      location: null,
       dormName: '세종관',
       validated: false,
       // user: null,
@@ -51,10 +50,6 @@ class AddDeliveryMailModal extends Component {
     this.setState({ content: event.target.value });
   }
 
-  onChangeLocation = (event) => {
-    this.setState({ locaiton: event.target.value });
-  }
-
   onSelectDorm = (event) => {
     this.setState({ dormName: event.target.value });
   }
@@ -76,7 +71,6 @@ class AddDeliveryMailModal extends Component {
               Receiver: this.state.receiver,
               Sender: this.state.sender,
               Content: this.state.content,
-              Location: this.state.location,
               State: 1,
             })
           })
@@ -200,13 +194,6 @@ class AddDeliveryMailModal extends Component {
               <Form.Control type="text" placeholder="Enter Sender" required onChange={this.onChangeSender} />
               <Form.Control.Feedback type="invalid">
                 Please enter the sender of the { this.props.isDelivery ? 'delivery' : 'mail' }
-              </Form.Control.Feedback>
-            </Form.Group>
-            <Form.Group controlId="exampleForm.ControlInput2">
-              <Form.Label>Location</Form.Label>
-              <Form.Control type="text" placeholder="Enter Location" required onChange={this.onChangeLocation} />
-              <Form.Control.Feedback type="invalid">
-                Please enter the whole location of the { this.props.isDelivery ? 'delivery' : 'mail' }
               </Form.Control.Feedback>
             </Form.Group>
             <Row>
