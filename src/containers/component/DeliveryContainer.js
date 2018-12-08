@@ -202,6 +202,7 @@ class DeliveryContainer extends Component {
               visible={this.state.addModalVisible}
               onModalHide={this.closeAddModal}
               isDelivery
+              dormId={this.props.dormId}
             />
             <Table responsive style={{ marginBottom: 100, marginTop: 20 }}>
               <thead>
@@ -364,6 +365,7 @@ class DeliveryContainer extends Component {
 
 DeliveryContainer.propTypes = {
   isMaster: PropTypes.bool.isRequired,
+  dormId: PropTypes.number.isRequired,
   updated: PropTypes.bool,
   onChangeUpdated: PropTypes.func,
 };
