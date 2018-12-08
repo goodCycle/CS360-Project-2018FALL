@@ -118,7 +118,7 @@ class DeliveryContainer extends Component {
     });
 
   changeState = (DelivID, StateNum) => {
-    console.log(DelivID);
+    this.setState({ loaded: false });
     const updateState = () => fetch(`/api/delivery_state/${DelivID}`, {
       method: 'post',
       headers: { 'Content-Type': 'application/json' },
@@ -142,7 +142,8 @@ class DeliveryContainer extends Component {
           delivIdToReceiptDate: {
             ...this.state.delivIdToReceiptDate,
             [DelivID]: responseData.data[0].ReceiptDate,
-          }
+          },
+          loaded: true,
         });
       })
       .catch((error) => {
@@ -324,16 +325,15 @@ class DeliveryContainer extends Component {
                           </div>
                         }
                         {
-                          item.State === 2 &&
-                            <div>
+                          (this.state.loaded && item.State === 2 && (this.state.delivIdToReceiptDate[item.DelivID] !== undefined))
+                            ? <div>
                               <h6 style={{ fontWeight: 'bold' }}>수령 시간</h6>
                               {
-                                (this.state.delivIdToReceiptDate === {})
-                                  ? null
-                                  : <p>{this.state.delivIdToReceiptDate[item.DelivID].split('T')[0]}{<br />}
-                                    {this.state.delivIdToReceiptDate[item.DelivID].split('T')[1].split('.')[0]}</p>
+                                <p>{this.state.delivIdToReceiptDate[item.DelivID].split('T')[0]}{<br />}
+                                  {this.state.delivIdToReceiptDate[item.DelivID].split('T')[1].split('.')[0]}</p>
                               }
                             </div>
+                            : null
                         }
                         <h6 style={{ fontWeight: 'bold' }}>배송 상태</h6>
                         <Dropdown as={ButtonGroup}>
