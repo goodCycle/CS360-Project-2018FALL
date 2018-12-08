@@ -237,6 +237,19 @@ app.get('/api/master_mail_recent/:MastID', (req, res) => {
   });
 });
 
+app.get('/api/receiptdelivdate/:DelivID', (req, res) => {
+  connection.query(`SELECT ReceiptDate FROM RECEIPTDELIV AS R
+    WHERE R.DelivID=${req.params.DelivID}`,
+  (error, results, fields) => {
+    if (error) {
+      res.status(500).json({ error: { message: error.message } });
+    }
+    console.log('The result is: ', results);
+    console.log('The field is', fields);
+    res.status(200).json({ data: results });
+  });
+});
+
 app.get('/api/login/:studentOrMaster', (req, res) => {
   const { id, password } = req.query;
   if (id == null || password == null || id === '' || password === '') {
@@ -361,10 +374,8 @@ app.post('/api/delivery', (req, res) => {
     Receiver: req.body.Receiver,
     Sender: req.body.Sender,
     Content: req.body.Content,
-    Location: req.body.Location,
     State: req.body.State,
-    ArrivalDate: new Date(),
-    ReceiptDate: null
+    ArrivalDate: new Date()
   };
   const query = connection.query('INSERT INTO DELIVERY SET ?', delivery,
     (err, /* result */) => {
@@ -385,10 +396,8 @@ app.post('/api/mail', (req, res) => {
     RoomNum: req.body.RoomNum,
     Receiver: req.body.Receiver,
     Sender: req.body.Sender,
-    Location: req.body.Location,
     State: req.body.State,
-    ArrivalDate: new Date(),
-    ReceiptDate: null
+    ArrivalDate: new Date()
   };
   const query = connection.query('INSERT INTO MAIL SET ?', mail,
     (err, /* result */) => {

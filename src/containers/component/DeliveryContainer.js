@@ -86,6 +86,13 @@ class DeliveryContainer extends Component {
       console.log('Error fetching getRoomDeliv', error);
     });
 
+  getReceiptDate = (delivid) => fetch(`/api/receiptdelivdate/${delivid}`)
+    .then((response) => response.json())
+    .then((responseData) => {
+      console.log(responseData.data);
+      return responseData.data;
+    });
+
 
   changeState = (DelivID, StateNum) => {
     console.log(DelivID);
@@ -264,8 +271,6 @@ class DeliveryContainer extends Component {
                       <Jumbotron>
                         <h6 style={{ fontWeight: 'bold' }}>운송장번호</h6>
                         <p>{item.DelivID}</p>
-                        <h6 style={{ fontWeight: 'bold' }}>배송지</h6>
-                        <p>{item.Location}</p>
                         <h6 style={{ fontWeight: 'bold' }}>보낸 이</h6>
                         <p>{item.Sender}</p>
                         <h6 style={{ fontWeight: 'bold' }}>받는 이</h6>
@@ -281,11 +286,12 @@ class DeliveryContainer extends Component {
                           </div>
                         }
                         {
-                          item.ReceiptDate !== null &&
+                          item.State === 2 &&
                             <div>
                               <h6 style={{ fontWeight: 'bold' }}>수령 시간</h6>
-                              <p>{item.ReceiptDate.split('T')[0]}<br />
-                                {item.ReceiptDate.split('T')[1].split('.')[0]}</p>
+                              <p>24243</p>
+                              {/*<p>{item.ReceiptDate.split('T')[0]}<br />*/}
+                                {/*{item.ReceiptDate.split('T')[1].split('.')[0]}</p>*/}
                             </div>
                         }
                         <h6 style={{ fontWeight: 'bold' }}>배송 상태</h6>
