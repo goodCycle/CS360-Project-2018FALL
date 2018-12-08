@@ -291,7 +291,7 @@ class DeliveryContainer extends Component {
                               <h6 style={{ fontWeight: 'bold' }}>수령 시간</h6>
                               <p>24243</p>
                               {/*<p>{item.ReceiptDate.split('T')[0]}<br />*/}
-                                {/*{item.ReceiptDate.split('T')[1].split('.')[0]}</p>*/}
+                              {/*{item.ReceiptDate.split('T')[1].split('.')[0]}</p>*/}
                             </div>
                         }
                         <h6 style={{ fontWeight: 'bold' }}>배송 상태</h6>
@@ -301,13 +301,13 @@ class DeliveryContainer extends Component {
                           </Button>
                           <Dropdown.Toggle split variant="info" id="dropdown-split-basic" />
                           <Dropdown.Menu>
-                            <Dropdown.Item onClick={this.changeState(item.DelivID, 1)}>
+                            <Dropdown.Item onClick={() => this.changeState(item.DelivID, 1)}>
                               미수령
                             </Dropdown.Item>
-                            <Dropdown.Item onClick={this.changeState(item.DelivID, 2)}>
+                            <Dropdown.Item onClick={() => this.changeState(item.DelivID, 2)}>
                               수령 완료
                             </Dropdown.Item>
-                            <Dropdown.Item onClick={this.changeState(item.DelivID, 3)}>
+                            <Dropdown.Item onClick={() => this.changeState(item.DelivID, 3)}>
                               반송 신청
                             </Dropdown.Item>
                           </Dropdown.Menu>
