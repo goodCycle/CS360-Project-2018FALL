@@ -282,7 +282,7 @@ app.get('/api/login/:studentOrMaster', (req, res) => {
 });
 
 app.get('/api/master_delivery_cnt/:MastID', (req, res) => {
-  connection.query(`SELECT D.DormID, COUNT(*) AS Cnt
+  connection.query(`SELECT D.DormID AS Did, COUNT(*) AS Cnt
     FROM DELIVERY AS D, MASTER AS M
     WHERE D.DormID=M.DormID AND M.MastID=${req.params.MastID}
     GROUP BY D.DormID`,
