@@ -22,6 +22,7 @@ class DeliveryContainer extends Component {
       deliveryList: [],
       loaded: false,
       addModalVisible: false,
+      delivIdToReceiptDate: {},
     };
   }
 
@@ -86,12 +87,14 @@ class DeliveryContainer extends Component {
       console.log('Error fetching getRoomDeliv', error);
     });
 
-  getReceiptDate = (delivid) => fetch(`/api/receiptdelivdate/${delivid}`)
-    .then((response) => response.json())
-    .then((responseData) => {
-      console.log(responseData.data);
-      return responseData.data;
-    });
+  getReceiptDate = (delivid) => {
+    return fetch(`/api/receiptdelivdate/${delivid}`)
+      .then((response) => response.json())
+      .then((responseData) => {
+        console.log(responseData.data);
+        this.setState({ receiptDateList: responseData.data });
+      });
+  }
 
 
   changeState = (DelivID, StateNum) => {
@@ -142,6 +145,7 @@ class DeliveryContainer extends Component {
   }
 
   render() {
+    console.log(this.getReceiptDate(151515))
     const stateTitle = (deliv) => {
       if (deliv === 1) {
         return '미수령';
@@ -289,7 +293,8 @@ class DeliveryContainer extends Component {
                           item.State === 2 &&
                             <div>
                               <h6 style={{ fontWeight: 'bold' }}>수령 시간</h6>
-                              <p>24243</p>
+                              <p>dfsdfsd</p>
+                              {/*<p>{this.getReceiptDate(item.DelivID)}</p>*/}
                               {/*<p>{item.ReceiptDate.split('T')[0]}<br />*/}
                               {/*{item.ReceiptDate.split('T')[1].split('.')[0]}</p>*/}
                             </div>
