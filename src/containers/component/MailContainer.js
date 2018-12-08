@@ -11,6 +11,7 @@ class MailContainer extends Component {
       mailList: [],
       loaded: false,
       addModalVisible: false,
+      mailIdToReceiptDate: {},
     };
   }
   static getDerivedStateFromProps(prevProps, prevState) {
@@ -28,13 +29,26 @@ class MailContainer extends Component {
       return this.getDormMail()
         .then(() => {
           console.log(this.state.mailList);
-          this.setState({ loaded: true });
-        });
+          // this.setState({ loaded: true });
+        })
+        .then(() => {
+          this.state.mailList.map((item) => {
+            if (item.State === 2) {
+              this.getReceiptDate(item.MailID);
+            }
+          });
+        })
+        .then(() => this.setState({ loaded: true }));
     }
     return this.getRoomMail()
       .then(() => {
-        this.setState({ loaded: true });
-      });
+        this.state.mailList.map((item) => {
+          if (item.State === 2) {
+            this.getReceiptDate(item.MailID);
+          }
+        });
+      })
+      .then(() => this.setState({ loaded: true }));
   }
 
   componentDidUpdate(prevProps) {
@@ -75,6 +89,23 @@ class MailContainer extends Component {
       console.log('Error fetching getRoomDeliv', error);
     });
 
+  getReceiptDate = (mailId) => fetch(`/api/receiptmaildate/${mailId}`)
+    .then((response) => response.json())
+    .then((responseData) => {
+      console.log(responseData.data);
+      // const delivIdToRD = {};
+      // delivIdToRD[delivId] = responseData.data;
+      this.setState({
+        mailIdToReceiptDate: {
+          ...this.state.mailIdToReceiptDate,
+          [mailId]: responseData.data[0].ReceiptDate,
+        }
+      });
+    })
+    .catch((error) => {
+      console.log('Error fetching getReceiptDate', error);
+    });
+
   changeState = (MailID, StateNum) => {
     console.log(MailID);
     const updateState = () => fetch(`/api/mail_state/${MailID}`, {
@@ -90,8 +121,22 @@ class MailContainer extends Component {
           console.log(responseData.data);
           this.setState({ mailList: responseData.data });
         })
+        .then(() => fetch(`/api/receiptmaildate/${MailID}`))
+        .then((response) => response.json())
+        .then((responseData) => {
+          console.log(responseData.data);
+          // const delivIdToRD = {};
+          // delivIdToRD[delivId] = responseData.data;
+          this.setState({
+            mailIdToReceiptDate: {
+              ...this.state.mailIdToReceiptDate,
+              [MailID]: responseData.data[0].ReceiptDate,
+            },
+            loaded: true,
+          });
+        })
         .catch((error) => {
-          console.log('Error fetching getRoomMail', error);
+          console.log('Error fetching mail_state', error);
         }));
     return updateState();
   }
@@ -145,6 +190,7 @@ class MailContainer extends Component {
               visible={this.state.addModalVisible}
               onModalHide={this.closeAddModal}
               isDelivery={false}
+              dormId={this.props.dormId}
             />
             <Table responsive style={{ marginBottom: 100, marginTop: 20 }}>
               <thead>
@@ -259,12 +305,15 @@ class MailContainer extends Component {
                           </div>
                         }
                         {
-                          item.ReceiptDate !== null &&
-                          <div>
-                            <h6 style={{ fontWeight: 'bold' }}>수령 시간</h6>
-                            <p>{item.ReceiptDate.split('T')[0]}<br />
-                              {item.ReceiptDate.split('T')[1].split('.')[0]}</p>
-                          </div>
+                          (this.state.loaded && item.State === 2 && (this.state.mailIdToReceiptDate[item.MailID] !== undefined))
+                            ? <div>
+                              <h6 style={{ fontWeight: 'bold' }}>수령 시간</h6>
+                              {
+                                <p>{this.state.mailIdToReceiptDate[item.MailID].split('T')[0]}{<br />}
+                                  {this.state.mailIdToReceiptDate[item.MailID].split('T')[1].split('.')[0]}</p>
+                              }
+                            </div>
+                            : null
                         }
                         <h6 style={{ fontWeight: 'bold' }}>배송 상태</h6>
                         <Dropdown as={ButtonGroup}>
@@ -298,6 +347,7 @@ class MailContainer extends Component {
 
 MailContainer.propTypes = {
   isMaster: PropTypes.bool.isRequired,
+  dormId: PropTypes.number.isRequired,
   updated: PropTypes.bool,
   onChangeUpdated: PropTypes.func,
 };

@@ -43,7 +43,6 @@ class DeliveryContainer extends Component {
       return this.getDormDeliv()
         .then(() => {
           console.log(this.state.deliveryList);
-          // this.setState({ loaded: true });
         })
         .then(() => {
           this.state.deliveryList.map((item) => {
@@ -160,7 +159,7 @@ class DeliveryContainer extends Component {
         });
       })
       .catch((error) => {
-        console.log('Error fetching getRoomDeliv', error);
+        console.log('Error fetching delivery_state', error);
       });
 
     return updateState();
@@ -203,8 +202,6 @@ class DeliveryContainer extends Component {
       return '의문의 상태';
     };
 
-    console.log('delivIdToReceiptDate', this.state.delivIdToReceiptDate);
-
     if (this.props.isMaster === true) {
       return (
         (this.state.loaded === false)
@@ -220,6 +217,7 @@ class DeliveryContainer extends Component {
                   visible={this.state.addModalVisible}
                   onModalHide={this.closeAddModal}
                   isDelivery
+                  dormId={this.props.dormId}
                 />
               </Col>
               <Col sm={4}>
@@ -389,6 +387,7 @@ class DeliveryContainer extends Component {
 
 DeliveryContainer.propTypes = {
   isMaster: PropTypes.bool.isRequired,
+  dormId: PropTypes.number.isRequired,
   updated: PropTypes.bool,
   onChangeUpdated: PropTypes.func,
 };

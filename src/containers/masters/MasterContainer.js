@@ -10,6 +10,8 @@ class MasterContainer extends Component {
     students: [],
     /* eslint-disable-next-line react/prop-types */
     userId: this.props.location.state.user.MastID,
+    /* eslint-disable-next-line react/prop-types */
+    userDormId: this.props.location.state.user.DormID,
     updated: false,
   }
   componentDidMount() {
@@ -27,7 +29,7 @@ class MasterContainer extends Component {
   }
 
   render() {
-    const { selectedTab, userId } = this.state;
+    const { selectedTab, userId, userDormId } = this.state;
     return (
       <Container>
         <Navbar bg="light" expand="lg">
@@ -52,9 +54,21 @@ class MasterContainer extends Component {
         </Navbar>
         {
           (selectedTab === '#delivery') // eslint-disable-line no-nested-ternary
-            ? <DeliveryContainer isMaster id={userId} updated={this.state.updated} onChangeUpdated={this.onChangeUpdated} />
+            ? <DeliveryContainer
+              isMaster
+              id={userId}
+              dormId={userDormId}
+              updated={this.state.updated}
+              onChangeUpdated={this.onChangeUpdated}
+            />
             : (selectedTab === '#mail')
-              ? <MailContainer isMaster id={userId} updated={this.state.updated} onChangeUpdated={this.onChangeUpdated} />
+              ? <MailContainer
+                isMaster
+                id={userId}
+                dormId={userDormId}
+                updated={this.state.updated}
+                onChangeUpdated={this.onChangeUpdated}
+              />
               : <MyPageContainer isMaster id={userId} />
         }
       </Container>

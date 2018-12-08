@@ -250,6 +250,19 @@ app.get('/api/receiptdelivdate/:DelivID', (req, res) => {
   });
 });
 
+app.get('/api/receiptmaildate/:MailID', (req, res) => {
+  connection.query(`SELECT ReceiptDate FROM RECEIPTMAIL AS R
+    WHERE R.MailID=${req.params.MailID}`,
+  (error, results, fields) => {
+    if (error) {
+      res.status(500).json({ error: { message: error.message } });
+    }
+    console.log('The result is: ', results);
+    console.log('The field is', fields);
+    res.status(200).json({ data: results });
+  });
+});
+
 app.get('/api/login/:studentOrMaster', (req, res) => {
   const { id, password } = req.query;
   if (id == null || password == null || id === '' || password === '') {
