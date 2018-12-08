@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Container, Jumbotron, Nav, Row, Col, Tab, Dropdown, Button, ButtonGroup, Table } from 'react-bootstrap';
+import { Container, Jumbotron, Nav, Row, Col, Tab, Dropdown, Button, ButtonGroup, Table, Alert } from 'react-bootstrap';
 import AddDeliveryMailModal from '../component/AddDeliveryMailModal';
 
 class MailContainer extends Component {
@@ -12,6 +12,7 @@ class MailContainer extends Component {
       loaded: false,
       addModalVisible: false,
       mailIdToReceiptDate: {},
+      mailCnt: null
     };
   }
   static getDerivedStateFromProps(prevProps, prevState) {
@@ -85,8 +86,18 @@ class MailContainer extends Component {
       console.log(responseData.data);
       this.setState({ mailList: responseData.data });
     })
+    .then(() => fetch(`/api/master_mail_cnt/${this.state.userId}`))
+    .then((response) => response.json())
+    .then((responseData) => {
+      console.log(responseData.data);
+      if (responseData.data.length > 0) {
+        this.setState({ mailCnt: responseData.data[0].Cnt });
+      } else {
+        this.setState({ mailCnt: 0 });
+      }
+    })
     .catch((error) => {
-      console.log('Error fetching getRoomDeliv', error);
+      console.log('Error fetching getDormMail', error);
     });
 
   getReceiptDate = (mailId) => fetch(`/api/receiptmaildate/${mailId}`)
@@ -183,15 +194,24 @@ class MailContainer extends Component {
           ? <Container>Loading</Container>
           : <Container>
             <br />
-            <Button variant="danger" onClick={this.openAddModal}>
-              Add Mail
-            </Button>
-            <AddDeliveryMailModal
-              visible={this.state.addModalVisible}
-              onModalHide={this.closeAddModal}
-              isDelivery={false}
-              dormId={this.props.dormId}
-            />
+            <Row>
+              <Col sm={1.5} style={{ marginLeft: 15 }}>
+                <Button variant="danger" onClick={this.openAddModal}>
+                  Add Mail
+                </Button>
+                <AddDeliveryMailModal
+                  visible={this.state.addModalVisible}
+                  onModalHide={this.closeAddModal}
+                  isDelivery={false}
+                  dormId={this.props.dormId}
+                />
+              </Col>
+              <Col sm={4}>
+                <Alert variant="danger">
+                  There are {this.state.mailCnt} mails on your dormitory &nbsp;
+                </Alert>
+              </Col>
+            </Row>
             <Table responsive style={{ marginBottom: 100, marginTop: 20 }}>
               <thead>
                 <tr>

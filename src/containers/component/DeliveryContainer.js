@@ -10,6 +10,7 @@ import {
   Button,
   ButtonGroup,
   Table,
+  Alert,
 } from 'react-bootstrap';
 import PropTypes from 'prop-types';
 import AddDeliveryMailModal from '../component/AddDeliveryMailModal';
@@ -23,6 +24,7 @@ class DeliveryContainer extends Component {
       loaded: false,
       addModalVisible: false,
       delivIdToReceiptDate: {},
+      deliveryCnt: null
     };
   }
 
@@ -95,8 +97,19 @@ class DeliveryContainer extends Component {
       console.log(responseData.data);
       this.setState({ deliveryList: responseData.data });
     })
+    .then(() => fetch(`/api/master_delivery_cnt/${this.state.userId}`))
+    .then((response) => response.json())
+    .then((responseData) => {
+      console.log(responseData.data);
+      if (responseData.data.length > 0) {
+        this.setState({ deliveryCnt: responseData.data[0].Cnt });
+      }
+      else {
+        this.setState({ deliveryCnt: 0 });
+      }
+    })
     .catch((error) => {
-      console.log('Error fetching getRoomDeliv', error);
+      console.log('Error fetching getDormDeliv', error);
     });
 
   getReceiptDate = (delivId) => fetch(`/api/receiptdelivdate/${delivId}`)
@@ -195,15 +208,24 @@ class DeliveryContainer extends Component {
           ? <Container>Loading</Container>
           : <Container>
             <br />
-            <Button variant="danger" onClick={this.openAddModal}>
-              Add Delivery
-            </Button>
-            <AddDeliveryMailModal
-              visible={this.state.addModalVisible}
-              onModalHide={this.closeAddModal}
-              isDelivery
-              dormId={this.props.dormId}
-            />
+            <Row>
+              <Col sm={1.5} style={{ marginLeft: 15 }}>
+                <Button variant="danger" onClick={this.openAddModal}>
+                  Add Delivery
+                </Button>
+                <AddDeliveryMailModal
+                  visible={this.state.addModalVisible}
+                  onModalHide={this.closeAddModal}
+                  isDelivery
+                  dormId={this.props.dormId}
+                />
+              </Col>
+              <Col sm={4}>
+                <Alert variant="danger">
+                  There are {this.state.deliveryCnt} deliveries on your dormitory &nbsp;
+                </Alert>
+              </Col>
+            </Row>
             <Table responsive style={{ marginBottom: 100, marginTop: 20 }}>
               <thead>
                 <tr>
