@@ -41,13 +41,26 @@ class DeliveryContainer extends Component {
       return this.getDormDeliv()
         .then(() => {
           console.log(this.state.deliveryList);
-          this.setState({ loaded: true });
-        });
+          // this.setState({ loaded: true });
+        })
+        .then(() => {
+          this.state.deliveryList.map((item) => {
+            if (item.State === 2) {
+              this.getReceiptDate(item.DelivID);
+            }
+          });
+        })
+        .then(() => this.setState({ loaded: true }));
     }
     return this.getRoomDeliv()
       .then(() => {
-        this.setState({ loaded: true });
-      });
+        this.state.deliveryList.map((item) => {
+          if (item.State === 2) {
+            this.getReceiptDate(item.DelivID);
+          }
+        });
+      })
+      .then(() => this.setState({ loaded: true }));
   }
 
   componentDidUpdate(prevProps) {
@@ -87,15 +100,22 @@ class DeliveryContainer extends Component {
       console.log('Error fetching getRoomDeliv', error);
     });
 
-  getReceiptDate = (delivid) => {
-    return fetch(`/api/receiptdelivdate/${delivid}`)
-      .then((response) => response.json())
-      .then((responseData) => {
-        console.log(responseData.data);
-        this.setState({ receiptDateList: responseData.data });
+  getReceiptDate = (delivId) => fetch(`/api/receiptdelivdate/${delivId}`)
+    .then((response) => response.json())
+    .then((responseData) => {
+      console.log(responseData.data);
+      // const delivIdToRD = {};
+      // delivIdToRD[delivId] = responseData.data;
+      this.setState({
+        delivIdToReceiptDate: {
+          ...this.state.delivIdToReceiptDate,
+          [delivId]: responseData.data[0].ReceiptDate,
+        }
       });
-  }
-
+    })
+    .catch((error) => {
+      console.log('Error fetching getReceiptDate', error);
+    });
 
   changeState = (DelivID, StateNum) => {
     console.log(DelivID);
@@ -106,15 +126,28 @@ class DeliveryContainer extends Component {
         State: StateNum
       })
     })
-      .then(() => fetch(`/api/student_delivery_recent/${this.state.userId}`)
-        .then((response) => response.json())
-        .then((responseData) => {
-          console.log(responseData.data);
-          this.setState({ deliveryList: responseData.data });
-        })
-        .catch((error) => {
-          console.log('Error fetching getRoomDeliv', error);
-        }));
+      .then(() => fetch(`/api/student_delivery_recent/${this.state.userId}`))
+      .then((response) => response.json())
+      .then((responseData) => {
+        console.log(responseData.data);
+        this.setState({ deliveryList: responseData.data });
+      })
+      .then(() => fetch(`/api/receiptdelivdate/${DelivID}`))
+      .then((response) => response.json())
+      .then((responseData) => {
+        console.log(responseData.data);
+        // const delivIdToRD = {};
+        // delivIdToRD[delivId] = responseData.data;
+        this.setState({
+          delivIdToReceiptDate: {
+            ...this.state.delivIdToReceiptDate,
+            [DelivID]: responseData.data[0].ReceiptDate,
+          }
+        });
+      })
+      .catch((error) => {
+        console.log('Error fetching getRoomDeliv', error);
+      });
 
     return updateState();
   }
@@ -145,7 +178,6 @@ class DeliveryContainer extends Component {
   }
 
   render() {
-    console.log(this.getReceiptDate(151515))
     const stateTitle = (deliv) => {
       if (deliv === 1) {
         return '미수령';
@@ -156,6 +188,8 @@ class DeliveryContainer extends Component {
       }
       return '의문의 상태';
     };
+
+    console.log('delivIdToReceiptDate', this.state.delivIdToReceiptDate);
 
     if (this.props.isMaster === true) {
       return (
@@ -293,10 +327,12 @@ class DeliveryContainer extends Component {
                           item.State === 2 &&
                             <div>
                               <h6 style={{ fontWeight: 'bold' }}>수령 시간</h6>
-                              <p>dfsdfsd</p>
-                              {/*<p>{this.getReceiptDate(item.DelivID)}</p>*/}
-                              {/*<p>{item.ReceiptDate.split('T')[0]}<br />*/}
-                              {/*{item.ReceiptDate.split('T')[1].split('.')[0]}</p>*/}
+                              {
+                                (this.state.delivIdToReceiptDate === {})
+                                  ? null
+                                  : <p>{this.state.delivIdToReceiptDate[item.DelivID].split('T')[0]}{<br />}
+                                    {this.state.delivIdToReceiptDate[item.DelivID].split('T')[1].split('.')[0]}</p>
+                              }
                             </div>
                         }
                         <h6 style={{ fontWeight: 'bold' }}>배송 상태</h6>
