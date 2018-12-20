@@ -1,8 +1,9 @@
-# React
+# Find your Taekbae!
 
 [![Build Status](https://travis-ci.org/werein/react.svg)](https://travis-ci.org/werein/react)[![Windows Build Status](https://ci.appveyor.com/api/projects/status/github/werein/react?branch=master&svg=true)](https://ci.appveyor.com/project/jirikolarik/react) [![Code Climate](https://codeclimate.com/github/werein/react/badges/gpa.svg)](https://codeclimate.com/github/werein/react)
 
-[![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy)
+This is the project in KAIST CS360(Introduction to Database).
+In this project, we build a local web service that can be used in managing deliveries and mails in college dormitory.
 
 Extremely simple boilerplate, __easiest you can find__, for React application including all the necessary tool
 
