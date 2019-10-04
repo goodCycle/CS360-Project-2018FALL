@@ -1,6 +1,7 @@
 const path = require('path');
 const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 
 const htmlWebpackPlugin = new HtmlWebpackPlugin({ template: 'index.html' });
 const definePlugin = new webpack.DefinePlugin({
@@ -74,5 +75,8 @@ module.exports = {
     proxy: {
       '/api': 'http://localhost:8181'
     }
+  },
+  optimization: {
+    minimizer: [new UglifyJsPlugin()],
   }
 };

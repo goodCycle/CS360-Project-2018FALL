@@ -3,6 +3,7 @@ const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const CompressionPlugin = require('compression-webpack-plugin');
+const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 
 const stylesheetsLoaders = [{
   loader: 'css-loader',
@@ -22,7 +23,7 @@ const definePlugin = new webpack.DefinePlugin({
     NODE_ENV: JSON.stringify(process.env.NODE_ENV || 'production')
   }
 });
-const uglifyPlugin = new webpack.optimize.UglifyJsPlugin({ compress: { warnings: false } });
+// const uglifyPlugin = new webpack.optimize.UglifyJsPlugin({ compress: { warnings: false } });
 const compressionPlugin = new CompressionPlugin();
 
 module.exports = {
@@ -38,8 +39,15 @@ module.exports = {
     stylesheetsPlugin,
     htmlWebpackPlugin,
     definePlugin,
-    uglifyPlugin,
-    compressionPlugin
+    // uglifyPlugin,
+    compressionPlugin,
+    new UglifyJsPlugin({
+      uglifyOptions: {
+        warnings: false,
+        ie8: false,
+        output: {comments: false}
+      }
+    })
   ],
   resolve: {
     modules: ['node_modules', path.join(__dirname, 'src')]
