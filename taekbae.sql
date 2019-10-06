@@ -1,4 +1,5 @@
-CREATE USER IF NOT EXISTS 'cupid'@'localhost' IDENTIFIED BY '1234';
+CREATE USER IF NOT EXISTS 'cupid'@'localhost' IDENTIFIED BY 'abcd1234';
+--CREATE USER IF NOT EXISTS 'cupid'@'localhost' IDENTIFIED WITH mysql_native_password BY ‘abcd1234’;
 CREATE DATABASE IF NOT EXISTS taekbae;
 GRANT ALL PRIVILEGES ON taekbae.* TO 'cupid'@'localhost';
 USE taekbae;
