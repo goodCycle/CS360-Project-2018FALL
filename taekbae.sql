@@ -1,6 +1,7 @@
-CREATE USER IF NOT EXISTS 'cupid'@'localhost' IDENTIFIED BY '1234';
+CREATE USER IF NOT EXISTS 'cs330'@'localhost' IDENTIFIED BY 'abcd1234';
+--CREATE USER IF NOT EXISTS 'cs330'@'localhost' IDENTIFIED WITH mysql_native_password BY ‘abcd1234’;
 CREATE DATABASE IF NOT EXISTS taekbae;
-GRANT ALL PRIVILEGES ON taekbae.* TO 'cupid'@'localhost';
+GRANT ALL PRIVILEGES ON taekbae.* TO 'cs330'@'localhost';
 USE taekbae;
 
 CREATE TABLE DORMITORY (

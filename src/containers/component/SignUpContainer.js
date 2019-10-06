@@ -113,7 +113,7 @@ class SignUpContainer extends Component {
     return (
       <Container>
         <Alert variant={'info'}>
-          Sign Up for Master is not allowed. Please send email to cupid@gmail.com.
+          Sign Up for Master is not allowed. Please send email to cs330@gmail.com.
         </Alert>
         <Form
           noValidate
