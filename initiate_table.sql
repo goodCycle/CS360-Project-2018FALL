@@ -74,24 +74,24 @@ INSERT INTO DORMITORY(DormID, BuildingNum, BuildingName) VALUES(23, 'N27', '유�
 
 #Delivery tuples
 INSERT INTO DELIVERY(DelivID, DormID, RoomNum, Receiver, Sender, Content, Location, State)
-VALUES(151515, 22, 322, '윤형준', '이찬욱', '문구류', '대전광역시 유성구 구성동 한국과학기술원 지혜관 322호', 1);
+VALUES(151515, 22, 322, '윤**', '이**', '문구류', '대전광역시 유성구', 1);
 
 #Mail tuples
 INSERT INTO MAIL(MailID, DormID, RoomNum, Receiver, Sender, Location, State)
-VALUES(3030, 22, 322, '윤형준', '이찬욱', '대전광역시 유성구 구성동 한국과학기술원 지혜관 322호', 1);
+VALUES(3030, 22, 322, '윤**', '이**', '대전광역시 유성구', 1);
 
 #Student tuples
 INSERT INTO STUDENT(StuID, DormID, RoomNum, StuName, PhoneNum, Password) 
-VALUES(20140645, 20, 104, '홍재이', 01099984612, 'abcd1234');
+VALUES(20140645, 20, 104, '홍**', 01022222222, 'abcd1234');
 INSERT INTO STUDENT(StuID, DormID, RoomNum, StuName, PhoneNum, Password) 
-VALUES(20140461, 22, 322, '이찬욱', 01091043774,'12345678');
+VALUES(20140461, 22, 322, '이**', 01022222222,'12345678');
 INSERT INTO STUDENT(StuID, DormID, RoomNum, StuName, PhoneNum, Password)
-VALUES(20150527, 18, 203, '윤형준', 01041459119,'efgd1234');
+VALUES(20150527, 18, 203, '윤**', 01022222222,'efgd1234');
 
 #Master tuples
 INSERT INTO MASTER(MastID, DormID, MastName, PhoneNum, Password) 
-VALUES(20092003, 20, '송혜교', 01037361129, '11112222');
+VALUES(20092003, 20, '송혜교', 01022222222, '11112222');
 INSERT INTO MASTER(MastID, DormID, MastName, PhoneNum, Password) 
-VALUES(20091001, 22, '장동건', 01044017718, '33334444');
+VALUES(20091001, 22, '장동건', 01022222222, '33334444');
 INSERT INTO MASTER(MastID, DormID, MastName, PhoneNum, Password) 
-VALUES(20101003, 18, '현순주', 01054193300, '55556666');
+VALUES(20101003, 18, '현**', 01022222222, '55556666');
